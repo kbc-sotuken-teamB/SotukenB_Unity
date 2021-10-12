@@ -15,11 +15,13 @@ public class TitleScene : MonoBehaviour
     void Update()
     {
         //とりあえず何かキーを押すかクリックで遷移
-        if (Input.anyKey || Input.GetMouseButtonUp(0))
+        //if (Input.anyKey || Input.GetMouseButtonUp(0))
+
+        //1PのAボタン（zキー）で
+        if(Input.GetButtonUp("1PButtonA"))
         {
-            //ゲームシーンに遷移する処理
-            //とりあえずミニゲームシーンへ　後でメインゲームシーンとかへに差し替えてね
-            SceneManager.LoadScene("MiniGameGeminScene");
+            //ゲームシーンに遷移
+            SceneManager.LoadScene("MainGameScene");
         }
     }
 }

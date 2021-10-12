@@ -4,7 +4,6 @@ using UnityEngine;
 
 //プレイヤー
 
-
 //落ちてくる物にぶつかったらタグで分岐
 //コインならポイントアップ
 //爆弾ならスタン、ポイントダウン
@@ -22,8 +21,16 @@ using UnityEngine;
 //各プレイヤーのポイントを表示
 //ポイント増減したタイミングでプレイヤーがsetを呼んで更新する
 
+
+//普通に並べてるだけだと左右干渉するんで離して置いて画面分割するか
+//並べたままで仕切り置いてもいいか？　端に寄りまくると隣のレーンに降ってきたやつ横取りできちゃいそうから駄目か
+
 public class GeminPlayer : MonoBehaviour
 {
+    //--パラメータ
+    //何Pか指定
+    public int PlayerNum;
+
     //--定数
     //スピード
     const float SPEED = 3.0f;
@@ -38,6 +45,9 @@ public class GeminPlayer : MonoBehaviour
     //スタン状態か？
     bool _isStan = false;
 
+    //プレイヤーごとの入力を名前指定で取得するために使う
+    //「○PHorizontal」
+    string _plNumTextHorizontal;
     //キャラコン
     CharacterController _controller;
 
@@ -47,6 +57,8 @@ public class GeminPlayer : MonoBehaviour
     {
         //キャラコン取得
         _controller = GetComponent<CharacterController>();
+        //「○PHorizontal」のテキスト作成
+        _plNumTextHorizontal = PlayerNum.ToString() + "PHorizontal";
     }
 
     // Update is called once per frame
@@ -70,7 +82,7 @@ public class GeminPlayer : MonoBehaviour
     void MovePlayer()
     {
         //左右入力取得、速度乗算
-        float moveX = Input.GetAxis("Horizontal") * SPEED * Time.deltaTime;
+        float moveX = Input.GetAxis(_plNumTextHorizontal) * SPEED * Time.deltaTime;
         //キャラコンでMove
         _controller.Move(new Vector3(moveX, 0.0f, 0.0f));
     }
