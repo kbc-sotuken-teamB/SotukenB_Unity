@@ -18,14 +18,41 @@ using UnityEngine.SceneManagement;
 //全員終わったらミニゲームへ
 //ランダムにミニゲームを決定してシーン遷移
 
+//ミニゲーム遷移してもゲームデータ保持しとかないとな
+
+
+
+//今のところダイスが変な動きするし　プレイヤー移動は申し訳程度の1P単純前進だけど
+//まあやりたいことできる間（ステート）はできたのでいいでしょう
+
+//あとミニゲームに急に行くので　もうちょっと間と
+//スタートボタン押したらミニゲーム開始するって準備画面もいる
+
+//マスの座標を目的地に指定して　一つ一つ　目的地配列にして進んでいってもらおうか
+
 public class MainGame : MonoBehaviour
 {
+    //とりあえずデバッグで動かすだけのプレイヤー1
+    public GameObject pl;
+    //ダイス
+    public GameObject Dice;
+
+
     //ステート
     //1P操作待機状態、2P…
     //サイコロが振られる、プレイヤーが出た目の数進むアニメーション中などのプレイヤー操作不可状態
 
     //プレイヤーの操作可能状態、操作不可状態のオンオフで、カレントプレイヤーの変数用意しといたらいいかな
 
+    enum EnMainGameState
+    {
+        enDiceRoll,
+        enMovePlayer,
+        enIdle
+    }
+
+    //現在のステート
+    EnMainGameState _mainState = EnMainGameState.enIdle;
 
     //これに今何Pのターンか取得してくっつける
     const string BUTTON_A = "PButtonA";
@@ -42,46 +69,134 @@ public class MainGame : MonoBehaviour
     //「○PButtonA」
     string _plInputTextA;
 
+    float _coolTime = 0.0f;
+
+    Vector3 _dicePos;
+
+    Vector3 _plPosOld;
+    Vector3 _targetPos;
+
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("First:" + _currentPlayer + "P");
+
         _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
+        //サイコロの初期位置取得しておく
+        _dicePos = Dice.transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //操作待ち（サイコロ振り待ち）
-        //ステートに変えたほうがええか
-        if (_isIdle)
+        switch (_mainState)
         {
-            //Aボタンでサイコロを振る
-            //1P:z 2P:b 3P:1 4P:5
-            if (Input.GetButtonUp(_plInputTextA))
-            {
-                _isIdle = false;
-            }
+            case EnMainGameState.enIdle:
+                //Aボタンでサイコロ振る待機
+                //1P:z 2P:b 3P:1 4P:5
+                PressA();
+                break;
+
+            case EnMainGameState.enDiceRoll:
+                //ダイス振るアニメーション
+                DiceRoll();
+                break;
+
+            case EnMainGameState.enMovePlayer:
+                //進む
+                MovePlayer();
+                break;
+
+
+            default:
+                break;
         }
-        else
+
+    }
+
+    //Aボタンでサイコロ振る待機
+    void PressA()
+    {
+        if (Input.GetButtonUp(_plInputTextA))
         {
-            //サイコロが振られる
+            //サイコロが動くステート
+            _mainState = EnMainGameState.enDiceRoll;
+            //クールタイムをリセット（仮なので時間でサイコロ止まる）
+            _coolTime = 0.0f;
+            //サイコロの重力を有効にして仮動作してもらう
+            Dice.GetComponent<Rigidbody>().useGravity = true;
+
+
+            //サイコロの出目　（仮）ランダム　本物ではサイコロの上面を判定する
             int dice = Random.Range(1, 6);
 
             Debug.Log(_currentPlayer + "P: " + dice);
-            //出た目の数進む
-            //踏んだマスに応じてイベント
+        }
+    }
 
-            //_currentPlayer = (_currentPlayer + 1) % 5;
+    //ダイスが振られる
+    void DiceRoll()
+    {
+        //クールタイム加算
+        _coolTime += Time.deltaTime;
+        //1秒立ったらとりあえず終わり
+        if (_coolTime > 1.0f)
+        {
+            //重力オフ
+            Dice.GetComponent<Rigidbody>().useGravity = false;
+            //サイコロを初期位置へ
+            Dice.transform.position = _dicePos;
+
+            Debug.Log("diceEnd");
+
+            //クールタイムリセット
+            _coolTime = 0.0f;
+
+            //現在のプレイヤー位置保持
+            _plPosOld = pl.transform.position;
+            //移動先(仮)は適当に
+            _targetPos = _plPosOld;
+            _targetPos.z += 2.0f;
+
+            //プレイヤーが進むステートへ
+            _mainState = EnMainGameState.enMovePlayer;
+        }
+
+    }
+
+    //プレイヤーが進む
+    void MovePlayer()
+    {
+
+        //Debug.Log("move");
+        //--出た目の数進む
+        //--プレイヤーごとのカレントマスデータも記録しないとな
+        //--踏んだマスに応じてイベント
+
+        //クールタイム加算
+        _coolTime = Mathf.Min(1.0f, _coolTime + Time.deltaTime);
+
+        //線形補間移動
+        pl.transform.position = Vector3.Lerp(_plPosOld, _targetPos, _coolTime);
+
+
+        //移動が終わったら
+        if (_coolTime == 1.0f)
+        {
+            Debug.Log("moveEnd");
+
+            //次のプレイヤー
             _currentPlayer += 1;
 
-            //4以下なら次のプレイヤー
-            if(_currentPlayer <= 4)
+            //4以下なら次のプレイヤーがサイコロを振る
+            if (_currentPlayer <= 4)
             {
                 _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
 
                 Debug.Log("Next:" + _currentPlayer + "P");
 
-                _isIdle = true;
+                //サイコロ待機へ
+                _mainState = EnMainGameState.enIdle;
             }
             //5になったら全員終わったので
             else
@@ -91,6 +206,9 @@ public class MainGame : MonoBehaviour
                 //（まだ一つしかないのでとりあえず下民呼ぶ）
                 SceneManager.LoadScene(_miniGameScenes[0]);
             }
+
         }
     }
+
+
 }
