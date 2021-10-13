@@ -6,7 +6,7 @@ using UnityEngine;
 
 //ミニゲームでのカメラどうしよう
 
-public class CameraMove : MonoBehaviour
+public class SSCameraMove : MonoBehaviour
 {
     public static Vector3 cameraPosition = new Vector3();//カメラの座標
     const float SPEED = 3.0f;
@@ -19,6 +19,6 @@ public class CameraMove : MonoBehaviour
     void Update()
     {
         GameObject camera = GameObject.Find("Main Camera");
-        camera.transform.Translate(new Vector3(1 * SPEED * Time.deltaTime, 0.0f, 0.0f));
+       camera.transform.Translate(new Vector3(0.0f, 1 * SPEED * Time.deltaTime,0.0f));
     }
 }
