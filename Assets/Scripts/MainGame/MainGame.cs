@@ -20,6 +20,7 @@ using UnityEngine.SceneManagement;
 
 //ミニゲーム遷移してもゲームデータ保持しとかないとな
 
+//プレイヤー各個のスクリプトで移動してもらったほうがいいな
 
 
 //今のところダイスが変な動きするし　プレイヤー移動は申し訳程度の1P単純前進だけど
@@ -37,6 +38,7 @@ public class MainGame : MonoBehaviour
     //ダイス
     public GameObject Dice;
 
+    public GameObject Squares;
 
     //ステート
     //1P操作待機状態、2P…
@@ -59,9 +61,10 @@ public class MainGame : MonoBehaviour
 
     //ミニゲームシーン名
     const string SCENE_GEMIN = "MiniGameGeminScene";
+    const string SCENE_SCROLL = "MiniGameSideScrolling";
     const string SCENE_JUMP = "MiniGameJumpAthleticScene";
     //ミニゲームシーンの配列 ランダムインデックスで呼ぶ
-    string[] _miniGameScenes = { SCENE_GEMIN, SCENE_JUMP };
+    string[] _miniGameScenes = { SCENE_GEMIN, SCENE_SCROLL/*, SCENE_JUMP*/ };
 
     //今何Pのターンか
     int _currentPlayer = 1;
@@ -69,12 +72,19 @@ public class MainGame : MonoBehaviour
     //「○PButtonA」
     string _plInputTextA;
 
+    //クールタイム
     float _coolTime = 0.0f;
 
+    //ダイスの初期位置
     Vector3 _dicePos;
 
+    //プレイヤーの移動前位置
     Vector3 _plPosOld;
+    //プレイヤーの移動先位置
     Vector3 _targetPos;
+
+    //マス
+    Transform[] _squares;
 
     // Start is called before the first frame update
     void Start()
@@ -84,6 +94,20 @@ public class MainGame : MonoBehaviour
         _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
         //サイコロの初期位置取得しておく
         _dicePos = Dice.transform.position;
+
+        //マスを上から順に取得 仮リストに入れて
+        List<Transform> tmp = new List<Transform>();
+        tmp.AddRange(Squares.GetComponentsInChildren<Transform>());
+        //一番最初の要素(親オブジェクトを除去)して
+        tmp.RemoveAt(0);
+        //配列に格納
+        _squares = tmp.ToArray();
+
+        //でばっぐ ちゃんと上から順に入ってる
+        for(int i = 0; i < _squares.Length; i++)
+        {
+            Debug.Log(_squares[i].name);
+        }
     }
 
     // Update is called once per frame
@@ -127,10 +151,6 @@ public class MainGame : MonoBehaviour
             Dice.GetComponent<Rigidbody>().useGravity = true;
 
 
-            //サイコロの出目　（仮）ランダム　本物ではサイコロの上面を判定する
-            int dice = Random.Range(1, 6);
-
-            Debug.Log(_currentPlayer + "P: " + dice);
         }
     }
 
@@ -149,14 +169,31 @@ public class MainGame : MonoBehaviour
 
             Debug.Log("diceEnd");
 
+
+            //サイコロの出目　（仮）ランダム　本物ではサイコロの上面を判定する
+            int dice = Random.Range(1, 6);
+            Debug.Log(_currentPlayer + "P: " + dice);
+
+            MainPlayer player = pl.GetComponent<MainPlayer>();
+            int plSquare = player.CurrentSquare;
+
+            List<Vector3> targetPosList = new List<Vector3>();
+            for(int i = 0; i < dice; i++)
+            {
+                targetPosList.Add(_squares[plSquare + i].position);
+            }
+
+            player.InitMove(targetPosList);
+
+
             //クールタイムリセット
-            _coolTime = 0.0f;
+            /*_coolTime = 0.0f;
 
             //現在のプレイヤー位置保持
             _plPosOld = pl.transform.position;
             //移動先(仮)は適当に
             _targetPos = _plPosOld;
-            _targetPos.z += 2.0f;
+            _targetPos.z += 2.0f;*/
 
             //プレイヤーが進むステートへ
             _mainState = EnMainGameState.enMovePlayer;
@@ -166,6 +203,36 @@ public class MainGame : MonoBehaviour
 
     //プレイヤーが進む
     void MovePlayer()
+    {
+        //プレイヤーの移動呼ぶ
+        if (pl.GetComponent<MainPlayer>().Move())
+        {
+            //移動終わったら
+            Debug.Log("moveEnd");
+
+            //次のプレイヤー
+            _currentPlayer += 1;
+
+            //4以下なら次のプレイヤーがサイコロを振る
+            if (_currentPlayer <= 4)
+            {
+                _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
+
+                Debug.Log("Next:" + _currentPlayer + "P");
+
+                //サイコロ待機へ
+                _mainState = EnMainGameState.enIdle;
+            }
+            //5になったら全員終わったので
+            else
+            {
+                //ランダムでミニゲームを呼び出す
+                SceneManager.LoadScene(_miniGameScenes[Random.Range(0, _miniGameScenes.Length - 1)]);
+            }
+        }
+    }
+
+    /*void MovePlayer()
     {
 
         //Debug.Log("move");
@@ -203,12 +270,13 @@ public class MainGame : MonoBehaviour
             {
                 //ランダムでミニゲームを呼び出す
                 //SceneManager.LoadScene(_miniGameScenes[Random.Range(0,2)]);
+                SceneManager.LoadScene(_miniGameScenes[Random.Range(0,1)]);
                 //（まだ一つしかないのでとりあえず下民呼ぶ）
-                SceneManager.LoadScene(_miniGameScenes[0]);
+                //SceneManager.LoadScene(_miniGameScenes[0]);
             }
 
         }
-    }
+    }*/
 
 
 }
