@@ -34,11 +34,18 @@ using UnityEngine.SceneManagement;
 public class MainGame : MonoBehaviour
 {
     //とりあえずデバッグで動かすだけのプレイヤー1
-    public GameObject pl;
+    //public GameObject pl;
+
+    //とりあえずプレイヤー配列　フォルダ代わりの親オブジェクト作ってぶちこんだ方がいいかも
+    //public GameObject[] Players;
+
+    //プレイヤー親
+    public GameObject PlayersParent;
+
     //ダイス
     public GameObject Dice;
-
-    public GameObject Squares;
+    //マスの親オブジェクト(フォルダ代わり)　ここから順番にマスを取得
+    public GameObject SquaresParent;
 
     //ステート
     //1P操作待機状態、2P…
@@ -62,7 +69,7 @@ public class MainGame : MonoBehaviour
     //ミニゲームシーン名
     const string SCENE_GEMIN = "MiniGameGeminScene";
     const string SCENE_SCROLL = "MiniGameSideScrolling";
-    const string SCENE_JUMP = "MiniGameJumpAthleticScene";
+    //const string SCENE_JUMP = "MiniGameJumpAthleticScene";
     //ミニゲームシーンの配列 ランダムインデックスで呼ぶ
     string[] _miniGameScenes = { SCENE_GEMIN, SCENE_SCROLL/*, SCENE_JUMP*/ };
 
@@ -79,12 +86,14 @@ public class MainGame : MonoBehaviour
     Vector3 _dicePos;
 
     //プレイヤーの移動前位置
-    Vector3 _plPosOld;
+    //Vector3 _plPosOld;
     //プレイヤーの移動先位置
-    Vector3 _targetPos;
+    //Vector3 _targetPos;
 
     //マス
     Transform[] _squares;
+
+    GameObject[] _players;
 
     // Start is called before the first frame update
     void Start()
@@ -97,17 +106,25 @@ public class MainGame : MonoBehaviour
 
         //マスを上から順に取得 仮リストに入れて
         List<Transform> tmp = new List<Transform>();
-        tmp.AddRange(Squares.GetComponentsInChildren<Transform>());
+        tmp.AddRange(SquaresParent.GetComponentsInChildren<Transform>());
         //一番最初の要素(親オブジェクトを除去)して
         tmp.RemoveAt(0);
         //配列に格納
         _squares = tmp.ToArray();
 
-        //でばっぐ ちゃんと上から順に入ってる
-        for(int i = 0; i < _squares.Length; i++)
+        //でばっぐ ちゃんと上から順にマスが入ってる
+        /*for(int i = 0; i < _squares.Length; i++)
         {
             Debug.Log(_squares[i].name);
+        }*/
+
+        //プレイヤーを取得
+        _players = new GameObject[PlayersParent.transform.childCount];
+        for(int i = 0; i < PlayersParent.transform.childCount; i++)
+        {
+            _players[i] = PlayersParent.transform.GetChild(i).gameObject;
         }
+
     }
 
     // Update is called once per frame
@@ -149,8 +166,6 @@ public class MainGame : MonoBehaviour
             _coolTime = 0.0f;
             //サイコロの重力を有効にして仮動作してもらう
             Dice.GetComponent<Rigidbody>().useGravity = true;
-
-
         }
     }
 
@@ -163,6 +178,7 @@ public class MainGame : MonoBehaviour
         if (_coolTime > 1.0f)
         {
             //重力オフ
+            //にしても動力はリセットされないので勝手に動きますね
             Dice.GetComponent<Rigidbody>().useGravity = false;
             //サイコロを初期位置へ
             Dice.transform.position = _dicePos;
@@ -174,26 +190,18 @@ public class MainGame : MonoBehaviour
             int dice = Random.Range(1, 6);
             Debug.Log(_currentPlayer + "P: " + dice);
 
-            MainPlayer player = pl.GetComponent<MainPlayer>();
+            MainPlayer player = _players[_currentPlayer - 1].GetComponent<MainPlayer>();
             int plSquare = player.CurrentSquare;
 
             List<Vector3> targetPosList = new List<Vector3>();
-            for(int i = 0; i < dice; i++)
+            for(int i = 1; i <= dice; i++)
             {
                 targetPosList.Add(_squares[plSquare + i].position);
             }
 
+            //プレイヤー移動初期化
             player.InitMove(targetPosList);
 
-
-            //クールタイムリセット
-            /*_coolTime = 0.0f;
-
-            //現在のプレイヤー位置保持
-            _plPosOld = pl.transform.position;
-            //移動先(仮)は適当に
-            _targetPos = _plPosOld;
-            _targetPos.z += 2.0f;*/
 
             //プレイヤーが進むステートへ
             _mainState = EnMainGameState.enMovePlayer;
@@ -205,7 +213,7 @@ public class MainGame : MonoBehaviour
     void MovePlayer()
     {
         //プレイヤーの移動呼ぶ
-        if (pl.GetComponent<MainPlayer>().Move())
+        if (_players[_currentPlayer - 1].GetComponent<MainPlayer>().Move())
         {
             //移動終わったら
             Debug.Log("moveEnd");
@@ -232,51 +240,9 @@ public class MainGame : MonoBehaviour
         }
     }
 
-    /*void MovePlayer()
-    {
-
-        //Debug.Log("move");
-        //--出た目の数進む
-        //--プレイヤーごとのカレントマスデータも記録しないとな
-        //--踏んだマスに応じてイベント
-
-        //クールタイム加算
-        _coolTime = Mathf.Min(1.0f, _coolTime + Time.deltaTime);
-
-        //線形補間移動
-        pl.transform.position = Vector3.Lerp(_plPosOld, _targetPos, _coolTime);
-
-
-        //移動が終わったら
-        if (_coolTime == 1.0f)
-        {
-            Debug.Log("moveEnd");
-
-            //次のプレイヤー
-            _currentPlayer += 1;
-
-            //4以下なら次のプレイヤーがサイコロを振る
-            if (_currentPlayer <= 4)
-            {
-                _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
-
-                Debug.Log("Next:" + _currentPlayer + "P");
-
-                //サイコロ待機へ
-                _mainState = EnMainGameState.enIdle;
-            }
-            //5になったら全員終わったので
-            else
-            {
-                //ランダムでミニゲームを呼び出す
-                //SceneManager.LoadScene(_miniGameScenes[Random.Range(0,2)]);
-                SceneManager.LoadScene(_miniGameScenes[Random.Range(0,1)]);
-                //（まだ一つしかないのでとりあえず下民呼ぶ）
-                //SceneManager.LoadScene(_miniGameScenes[0]);
-            }
-
-        }
-    }*/
+    //--出た目の数進む
+    //--プレイヤーごとのカレントマスデータも記録しないとな
+    //--踏んだマスに応じてイベント
 
 
 }

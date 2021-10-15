@@ -76,18 +76,19 @@ public class MainPlayer : MonoBehaviour
         //移動終わったら
         if(_moveTime == MOVE_DURATION)
         {
+            _moveTime = 0.0f;
+            _oldPos = transform.position;
+            _currentSquare++;
+
             //移動対象インクリメント(前置)して
             //もし配列外になったなら
-            if(++_targetPosListInd >= _targetPosList.Count)
+            if (++_targetPosListInd >= _targetPosList.Count)
             {
                 //終わり
                 _isMove = false;
                 //移動終わったtrueを返す
                 return true;
             }
-            _moveTime = 0.0f;
-            _oldPos = transform.position;
-            _currentSquare++;
             //（このタイミングで次のマスに進み始めるまでに間を置くことも可能）
         }
 

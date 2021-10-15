@@ -18,7 +18,7 @@ public class TitleScene : MonoBehaviour
         //if (Input.anyKey || Input.GetMouseButtonUp(0))
 
         //1PのAボタン（zキー）で
-        if(Input.GetButtonUp("1PButtonA"))
+        if(Input.GetButtonUp("1PButtonA") || Input.GetMouseButtonUp(0))
         {
             //ゲームシーンに遷移
             SceneManager.LoadScene("MainGameScene");
