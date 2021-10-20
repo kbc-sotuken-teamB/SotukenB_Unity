@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 //メインゲーム全体のスクリプト
 
@@ -33,6 +34,8 @@ using UnityEngine.SceneManagement;
 
 public class MainGame : MonoBehaviour
 {
+    public Text AnnounceText;
+
     //とりあえずデバッグで動かすだけのプレイヤー1
     //public GameObject pl;
 
@@ -55,6 +58,7 @@ public class MainGame : MonoBehaviour
 
     enum EnMainGameState
     {
+        enWait,
         enDiceRoll,
         enMovePlayer,
         enIdle
@@ -95,10 +99,13 @@ public class MainGame : MonoBehaviour
 
     GameObject[] _players;
 
+    CameraFollowPlayer _cameraScript;
+
     // Start is called before the first frame update
     void Start()
     {
         Debug.Log("First:" + _currentPlayer + "P");
+        AnnounceText.text = "1Pのターン！";
 
         _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
         //サイコロの初期位置取得しておく
@@ -125,6 +132,7 @@ public class MainGame : MonoBehaviour
             _players[i] = PlayersParent.transform.GetChild(i).gameObject;
         }
 
+        _cameraScript = Camera.main.GetComponent<CameraFollowPlayer>();
     }
 
     // Update is called once per frame
@@ -164,9 +172,17 @@ public class MainGame : MonoBehaviour
             _mainState = EnMainGameState.enDiceRoll;
             //クールタイムをリセット（仮なので時間でサイコロ止まる）
             _coolTime = 0.0f;
-            //サイコロの重力を有効にして仮動作してもらう
-            Dice.GetComponent<Rigidbody>().useGravity = true;
+            //サイコロのkinematicを解除して動かす
+            Dice.GetComponent<Rigidbody>().isKinematic = false;
         }
+    }
+
+    private IEnumerator NextState(EnMainGameState nextState)
+    {
+        _mainState = EnMainGameState.enWait;
+        yield return new WaitForSeconds(1f);
+        _mainState = nextState;
+
     }
 
     //ダイスが振られる
@@ -177,17 +193,18 @@ public class MainGame : MonoBehaviour
         //1秒立ったらとりあえず終わり
         if (_coolTime > 1.0f)
         {
-            //重力オフ
-            //にしても動力はリセットされないので勝手に動きますね
-            Dice.GetComponent<Rigidbody>().useGravity = false;
+            //サイコロを止める
+            Dice.GetComponent<Rigidbody>().isKinematic = true;
             //サイコロを初期位置へ
             Dice.transform.position = _dicePos;
+            Dice.transform.rotation = Quaternion.identity;
 
             Debug.Log("diceEnd");
 
 
             //サイコロの出目　（仮）ランダム　本物ではサイコロの上面を判定する
             int dice = Random.Range(1, 6);
+            AnnounceText.text = _currentPlayer + "Pは" + dice + "マス進みます" ;
             Debug.Log(_currentPlayer + "P: " + dice);
 
             MainPlayer player = _players[_currentPlayer - 1].GetComponent<MainPlayer>();
@@ -204,8 +221,28 @@ public class MainGame : MonoBehaviour
 
 
             //プレイヤーが進むステートへ
-            _mainState = EnMainGameState.enMovePlayer;
+            //_mainState = EnMainGameState.enMovePlayer;
+            //コルーチン
+            StartCoroutine(NextState(EnMainGameState.enMovePlayer));
         }
+
+    }
+
+    IEnumerator NextPlayer()
+    {
+        _mainState = EnMainGameState.enWait;
+
+        yield return new WaitForSeconds(1f);
+
+        _cameraScript.ChangeFollow(_currentPlayer);
+
+        _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
+
+        Debug.Log("Next:" + _currentPlayer + "P");
+        AnnounceText.text = _currentPlayer + "Pのターン！";
+
+        //サイコロ待機へ
+        _mainState = EnMainGameState.enIdle;
 
     }
 
@@ -224,25 +261,19 @@ public class MainGame : MonoBehaviour
             //4以下なら次のプレイヤーがサイコロを振る
             if (_currentPlayer <= 4)
             {
-                _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
-
-                Debug.Log("Next:" + _currentPlayer + "P");
-
-                //サイコロ待機へ
-                _mainState = EnMainGameState.enIdle;
+                StartCoroutine(NextPlayer());
             }
             //5になったら全員終わったので
             else
             {
                 //ランダムでミニゲームを呼び出す
-                SceneManager.LoadScene(_miniGameScenes[Random.Range(0, _miniGameScenes.Length - 1)]);
+                SceneManager.LoadScene(_miniGameScenes[Random.Range(0, _miniGameScenes.Length)]);
             }
         }
     }
+}
 
     //--出た目の数進む
     //--プレイヤーごとのカレントマスデータも記録しないとな
     //--踏んだマスに応じてイベント
 
-
-}
