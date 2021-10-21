@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 //メインゲーム全体のスクリプト
 
@@ -20,6 +21,7 @@ using UnityEngine.SceneManagement;
 
 //ミニゲーム遷移してもゲームデータ保持しとかないとな
 
+//プレイヤー各個のスクリプトで移動してもらったほうがいいな
 
 
 //今のところダイスが変な動きするし　プレイヤー移動は申し訳程度の1P単純前進だけど
@@ -32,11 +34,21 @@ using UnityEngine.SceneManagement;
 
 public class MainGame : MonoBehaviour
 {
+    public Text AnnounceText;
+
     //とりあえずデバッグで動かすだけのプレイヤー1
-    public GameObject pl;
+    //public GameObject pl;
+
+    //とりあえずプレイヤー配列　フォルダ代わりの親オブジェクト作ってぶちこんだ方がいいかも
+    //public GameObject[] Players;
+
+    //プレイヤー親
+    public GameObject PlayersParent;
+
     //ダイス
     public GameObject Dice;
-
+    //マスの親オブジェクト(フォルダ代わり)　ここから順番にマスを取得
+    public GameObject SquaresParent;
 
     //ステート
     //1P操作待機状態、2P…
@@ -46,6 +58,7 @@ public class MainGame : MonoBehaviour
 
     enum EnMainGameState
     {
+        enWait,
         enDiceRoll,
         enMovePlayer,
         enIdle
@@ -59,9 +72,10 @@ public class MainGame : MonoBehaviour
 
     //ミニゲームシーン名
     const string SCENE_GEMIN = "MiniGameGeminScene";
-    const string SCENE_JUMP = "MiniGameJumpAthleticScene";
+    const string SCENE_SCROLL = "MiniGameSideScrolling";
+    //const string SCENE_JUMP = "MiniGameJumpAthleticScene";
     //ミニゲームシーンの配列 ランダムインデックスで呼ぶ
-    string[] _miniGameScenes = { SCENE_GEMIN, SCENE_JUMP };
+    string[] _miniGameScenes = { SCENE_GEMIN, SCENE_SCROLL/*, SCENE_JUMP*/ };
 
     //今何Pのターンか
     int _currentPlayer = 1;
@@ -69,21 +83,56 @@ public class MainGame : MonoBehaviour
     //「○PButtonA」
     string _plInputTextA;
 
+    //クールタイム
     float _coolTime = 0.0f;
 
+    //ダイスの初期位置
     Vector3 _dicePos;
 
-    Vector3 _plPosOld;
-    Vector3 _targetPos;
+    //プレイヤーの移動前位置
+    //Vector3 _plPosOld;
+    //プレイヤーの移動先位置
+    //Vector3 _targetPos;
+
+    //マス
+    Transform[] _squares;
+
+    GameObject[] _players;
+
+    CameraFollowPlayer _cameraScript;
 
     // Start is called before the first frame update
     void Start()
     {
         Debug.Log("First:" + _currentPlayer + "P");
+        AnnounceText.text = "1Pのターン！";
 
         _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
         //サイコロの初期位置取得しておく
         _dicePos = Dice.transform.position;
+
+        //マスを上から順に取得 仮リストに入れて
+        List<Transform> tmp = new List<Transform>();
+        tmp.AddRange(SquaresParent.GetComponentsInChildren<Transform>());
+        //一番最初の要素(親オブジェクトを除去)して
+        tmp.RemoveAt(0);
+        //配列に格納
+        _squares = tmp.ToArray();
+
+        //でばっぐ ちゃんと上から順にマスが入ってる
+        /*for(int i = 0; i < _squares.Length; i++)
+        {
+            Debug.Log(_squares[i].name);
+        }*/
+
+        //プレイヤーを取得
+        _players = new GameObject[PlayersParent.transform.childCount];
+        for(int i = 0; i < PlayersParent.transform.childCount; i++)
+        {
+            _players[i] = PlayersParent.transform.GetChild(i).gameObject;
+        }
+
+        _cameraScript = Camera.main.GetComponent<CameraFollowPlayer>();
     }
 
     // Update is called once per frame
@@ -123,15 +172,17 @@ public class MainGame : MonoBehaviour
             _mainState = EnMainGameState.enDiceRoll;
             //クールタイムをリセット（仮なので時間でサイコロ止まる）
             _coolTime = 0.0f;
-            //サイコロの重力を有効にして仮動作してもらう
-            Dice.GetComponent<Rigidbody>().useGravity = true;
-
-
-            //サイコロの出目　（仮）ランダム　本物ではサイコロの上面を判定する
-            int dice = Random.Range(1, 6);
-
-            Debug.Log(_currentPlayer + "P: " + dice);
+            //サイコロのkinematicを解除して動かす
+            Dice.GetComponent<Rigidbody>().isKinematic = false;
         }
+    }
+
+    private IEnumerator NextState(EnMainGameState nextState)
+    {
+        _mainState = EnMainGameState.enWait;
+        yield return new WaitForSeconds(1f);
+        _mainState = nextState;
+
     }
 
     //ダイスが振られる
@@ -142,47 +193,66 @@ public class MainGame : MonoBehaviour
         //1秒立ったらとりあえず終わり
         if (_coolTime > 1.0f)
         {
-            //重力オフ
-            Dice.GetComponent<Rigidbody>().useGravity = false;
+            //サイコロを止める
+            Dice.GetComponent<Rigidbody>().isKinematic = true;
             //サイコロを初期位置へ
             Dice.transform.position = _dicePos;
+            Dice.transform.rotation = Quaternion.identity;
 
             Debug.Log("diceEnd");
 
-            //クールタイムリセット
-            _coolTime = 0.0f;
 
-            //現在のプレイヤー位置保持
-            _plPosOld = pl.transform.position;
-            //移動先(仮)は適当に
-            _targetPos = _plPosOld;
-            _targetPos.z += 2.0f;
+            //サイコロの出目　（仮）ランダム　本物ではサイコロの上面を判定する
+            int dice = Random.Range(1, 6);
+            AnnounceText.text = _currentPlayer + "Pは" + dice + "マス進みます" ;
+            Debug.Log(_currentPlayer + "P: " + dice);
+
+            MainPlayer player = _players[_currentPlayer - 1].GetComponent<MainPlayer>();
+            int plSquare = player.CurrentSquare;
+
+            List<Vector3> targetPosList = new List<Vector3>();
+            for(int i = 1; i <= dice; i++)
+            {
+                targetPosList.Add(_squares[plSquare + i].position);
+            }
+
+            //プレイヤー移動初期化
+            player.InitMove(targetPosList);
+
 
             //プレイヤーが進むステートへ
-            _mainState = EnMainGameState.enMovePlayer;
+            //_mainState = EnMainGameState.enMovePlayer;
+            //コルーチン
+            StartCoroutine(NextState(EnMainGameState.enMovePlayer));
         }
+
+    }
+
+    IEnumerator NextPlayer()
+    {
+        _mainState = EnMainGameState.enWait;
+
+        yield return new WaitForSeconds(1f);
+
+        _cameraScript.ChangeFollow(_currentPlayer);
+
+        _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
+
+        Debug.Log("Next:" + _currentPlayer + "P");
+        AnnounceText.text = _currentPlayer + "Pのターン！";
+
+        //サイコロ待機へ
+        _mainState = EnMainGameState.enIdle;
 
     }
 
     //プレイヤーが進む
     void MovePlayer()
     {
-
-        //Debug.Log("move");
-        //--出た目の数進む
-        //--プレイヤーごとのカレントマスデータも記録しないとな
-        //--踏んだマスに応じてイベント
-
-        //クールタイム加算
-        _coolTime = Mathf.Min(1.0f, _coolTime + Time.deltaTime);
-
-        //線形補間移動
-        pl.transform.position = Vector3.Lerp(_plPosOld, _targetPos, _coolTime);
-
-
-        //移動が終わったら
-        if (_coolTime == 1.0f)
+        //プレイヤーの移動呼ぶ
+        if (_players[_currentPlayer - 1].GetComponent<MainPlayer>().Move())
         {
+            //移動終わったら
             Debug.Log("moveEnd");
 
             //次のプレイヤー
@@ -191,24 +261,19 @@ public class MainGame : MonoBehaviour
             //4以下なら次のプレイヤーがサイコロを振る
             if (_currentPlayer <= 4)
             {
-                _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
-
-                Debug.Log("Next:" + _currentPlayer + "P");
-
-                //サイコロ待機へ
-                _mainState = EnMainGameState.enIdle;
+                StartCoroutine(NextPlayer());
             }
             //5になったら全員終わったので
             else
             {
                 //ランダムでミニゲームを呼び出す
-                //SceneManager.LoadScene(_miniGameScenes[Random.Range(0,2)]);
-                //（まだ一つしかないのでとりあえず下民呼ぶ）
-                SceneManager.LoadScene(_miniGameScenes[0]);
+                SceneManager.LoadScene(_miniGameScenes[Random.Range(0, _miniGameScenes.Length)]);
             }
-
         }
     }
-
-
 }
+
+    //--出た目の数進む
+    //--プレイヤーごとのカレントマスデータも記録しないとな
+    //--踏んだマスに応じてイベント
+
