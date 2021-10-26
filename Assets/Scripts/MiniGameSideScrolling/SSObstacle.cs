@@ -3,59 +3,57 @@
 //障害物のクラス。めっちゃFind使ってます。重い死ねってなったら解決法教えて下し亜。
 public class SSObstacle : MonoBehaviour
 {
-    //private const int OBSTRACT_MAX = 5;//妨害箱の最大数
-    //private GameObject[] obstract = new GameObject[5];
-    //private GameObject wall = new GameObject();
+    private int OBSTRACT_MAX = 25;//妨害箱の最大数
+    private GameObject[] obstract;
+    private GameObject wall;
 
     //Start is called before the first frame update
     private void Start()
     {
-       // RandomSelectMove();
-        //obstract[1] = GameObject.Find("Obstacle" + 0);
-        //obstract[2] = GameObject.Find("Obstacle" + 1);
-        //obstract[3] = GameObject.Find("Obstacle" + 2);
-        //obstract[4] = GameObject.Find("Obstacle" + 3);
-        //obstract[5] = GameObject.Find("Obstacle" + 4);
+        obstract = new GameObject[OBSTRACT_MAX];
 
-        //wall = GameObject.Find("Wall");
+        wall = GameObject.Find("Wall");
+
+        for (int i = 0; i < OBSTRACT_MAX; i++)          //オブジェクトの最大数廻す
+        {
+            int num = i + 1;                            //オブジェクトの名前を1番から作ったバカがいると聞いて。
+            string myName = "Obstacle" + num.ToString();//オブジェクトの名前完成
+            obstract[i] = GameObject.Find(myName);      //Find関数使ってるだけ
+        }
+        RandomSelectMove();                             //ランダムに障害物を上にずらす関数。ランダム生成でよくね。
     }
 
     // Update is called once per frame
     private void Update()
     {
-        //Iranaikamo();
+        //アップデートに何もないってま！？
     }
 
-    private void Iranaikamo()
-    {
-        //if (wall.transform.position.z > obstract[1].transform.position.z)
-        //{
-        //    RandomSelectMove();
-        //}
-    }
-
-    //ランダムに箱を最大4つまで障害物として配置します。
+    //ランダムに箱を最大5×4まで障害物として配置します。数は変わります。
     private void RandomSelectMove()
     {
-        //int countMax = 4;
-        //int count = 0;
+        int countMax = 4;
+        int count2 = 0;
+        System.Random random = new System.Random();
+        for (int i = 0; i < 5; i++)//障害物縦列
+        {
+            count2++;
+            int count = 0;
+            for (int j = 0; j < 5; j++)//障害物横列
+            {
+                int rand = random.Next(random.Next(0, 2));              //0か1をランダムで選ぶ
+                if (count <= countMax)                                  //箱を出した数が4つ以下なら
+                {
+                    Vector3 pos = obstract[count2].transform.position;  //どうやらC#では直接構造体の変数を弄れないと聞いて。
+                    if (rand == 0)
+                    {
+                        pos.y = 0;                                      //Y=0座標です。0だと妨害される高さなんで。
 
-        //System.Random random = new System.Random();
-        //for (int i = 0; i < OBSTRACT_MAX; i++)
-        //{
-        //    int rand = random.Next(random.Next(0, 1));//0or1をランダムで作成
-        //    if (count <= countMax)//箱を出した数が4つ以下なら
-        //    {
-        //        Vector3 pos = obstract[i].transform.position;
-        //        if (rand == 0)
-        //        {
-        //            pos.y = 3;
-
-        //            count++;//カウントを進める
-        //        }
-        //        pos.z += 10.0f;
-        //        obstract[i].transform.position = pos;
-        //    }
-        //}
+                        count++;                                        //カウントを進める
+                    }
+                    obstract[count2].transform.position = pos;          //座標の更新。
+                }
+            }
+        }
     }
 }
