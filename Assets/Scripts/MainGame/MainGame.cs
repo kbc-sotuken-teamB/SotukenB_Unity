@@ -50,6 +50,12 @@ public class MainGame : MonoBehaviour
     //マスの親オブジェクト(フォルダ代わり)　ここから順番にマスを取得
     public GameObject SquaresParent;
 
+    //A
+    public GameObject TextA;
+
+    //
+    public GameObject PanelBeginMiniGame; 
+
     //ステート
     //1P操作待機状態、2P…
     //サイコロが振られる、プレイヤーが出た目の数進むアニメーション中などのプレイヤー操作不可状態
@@ -76,6 +82,8 @@ public class MainGame : MonoBehaviour
     //const string SCENE_JUMP = "MiniGameJumpAthleticScene";
     //ミニゲームシーンの配列 ランダムインデックスで呼ぶ
     string[] _miniGameScenes = { SCENE_GEMIN, SCENE_SCROLL/*, SCENE_JUMP*/ };
+
+    string[] MINIGAME_TITLE = { "下民暮らし", "Run!Run!Run!", "ジャンプアスレチック" };
 
     //今何Pのターンか
     int _currentPlayer = 1;
@@ -106,6 +114,7 @@ public class MainGame : MonoBehaviour
     {
         Debug.Log("First:" + _currentPlayer + "P");
         AnnounceText.text = "1Pのターン！";
+        TextA.SetActive(true);
 
         _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
         //サイコロの初期位置取得しておく
@@ -130,6 +139,7 @@ public class MainGame : MonoBehaviour
         for(int i = 0; i < PlayersParent.transform.childCount; i++)
         {
             _players[i] = PlayersParent.transform.GetChild(i).gameObject;
+            _players[i].GetComponent<MainPlayer>().SetPlNum(i + 1);
         }
 
         _cameraScript = Camera.main.GetComponent<CameraFollowPlayer>();
@@ -156,6 +166,8 @@ public class MainGame : MonoBehaviour
                 MovePlayer();
                 break;
 
+                //何もしない
+            case EnMainGameState.enWait:
 
             default:
                 break;
@@ -168,6 +180,7 @@ public class MainGame : MonoBehaviour
     {
         if (Input.GetButtonUp(_plInputTextA))
         {
+            TextA.SetActive(false);
             //サイコロが動くステート
             _mainState = EnMainGameState.enDiceRoll;
             //クールタイムをリセット（仮なので時間でサイコロ止まる）
@@ -240,6 +253,7 @@ public class MainGame : MonoBehaviour
 
         Debug.Log("Next:" + _currentPlayer + "P");
         AnnounceText.text = _currentPlayer + "Pのターン！";
+        TextA.SetActive(true);
 
         //サイコロ待機へ
         _mainState = EnMainGameState.enIdle;
@@ -266,8 +280,18 @@ public class MainGame : MonoBehaviour
             //5になったら全員終わったので
             else
             {
+                int miniGameInd = Random.Range(0, _miniGameScenes.Length);
+
+                PanelBeginMiniGame.SetActive(true);
+
+                PanelBeginMiniGame.transform.Find("TextBeginMiniGame").GetComponent<Text>().text
+                    = "ミニゲーム" + MINIGAME_TITLE[miniGameInd] + "を開始します";
+
+
+                _mainState = EnMainGameState.enWait;
+                
                 //ランダムでミニゲームを呼び出す
-                SceneManager.LoadScene(_miniGameScenes[Random.Range(0, _miniGameScenes.Length)]);
+                //SceneManager.LoadScene(_miniGameScenes[Random.Range(0, _miniGameScenes.Length)]);
             }
         }
     }
