@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MiniGameSideScrolling.unity
     guid: b7952a7093338074c990f44acf241e5c
+  - enabled: 1
+    path: Assets/Scenes/MiniGamejump.unity
+    guid: 3732d7a66c9d17f4d97b02f8aad71960
   m_configObjects: {}

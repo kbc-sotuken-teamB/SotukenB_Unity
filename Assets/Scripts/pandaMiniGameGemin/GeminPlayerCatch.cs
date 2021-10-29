@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//プレイヤーが落ちてくる物をキャッチする判定　かごのスクリプト
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////*プレイヤーが落ちてくる物をキャッチする判定　かごのスクリプト*////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public class GeminPlayerCatch : MonoBehaviour
 {
     //プレイヤーのスクリプト
     GeminPlayer _geminPlayerScript;
+
 
     // Start is called before the first frame update
     void Start()
@@ -20,6 +23,7 @@ public class GeminPlayerCatch : MonoBehaviour
     {
         //デバッグ　ぶつかった
         Debug.Log("hit");
+        
 
         //コイン
         if(other.gameObject.tag == "Coin")

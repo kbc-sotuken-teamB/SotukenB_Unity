@@ -2,10 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//プレイヤーに追従するカメラ
 public class CameraFollowPlayer : MonoBehaviour
 {
+    //--参照
+    //プレイヤーの親オブジェクト
     public GameObject PlayersParent;
+    //1マス目がいい感じにカメラの真ん中にあるので目安位置マーカーとして使う
+    public GameObject TargetPosition;
 
+    //カメラ位置＋オフセット＝追従カメラ
     Vector3 _cameraOffset;
 
     GameObject[] _players;
@@ -24,7 +30,9 @@ public class CameraFollowPlayer : MonoBehaviour
             _players[i] = PlayersParent.transform.GetChild(i).gameObject;
         }
 
-        _cameraOffset = transform.position - _players[0].transform.position;
+        _cameraOffset = transform.position - TargetPosition.transform.position;
+        //~プレイヤーの高さ
+        _cameraOffset.y -= 0.86f;
     }
 
     // Update is called once per frame

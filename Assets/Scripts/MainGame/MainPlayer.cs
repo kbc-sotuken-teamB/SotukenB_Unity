@@ -8,9 +8,16 @@ using UnityEngine.UI;
 //自分の今いるマスとか保持して
 //各自で移動アニメーションして
 
+
+//Startの　テキストアップデートは　メインゲームのデータロード後に呼んでほしいので
+//Playerはメインゲームが生成するようにした方が安定
+//プレイ人数の変更にも対応できるし
+//…まあミニゲームもあるし面倒くさいし別に人数は変更しなくていいか
+
+//というかUnityはスクリプトの実行順指定できるのか～
+
 public class MainPlayer : MonoBehaviour
 {
-    //--パラメータ
     //とりあえず割り当てで　めんどくさいので本当は検索とか　メインゲームに持たせとくとか　自分で生成して持っとくとかの方がいい
     public Text TextPoint;
 
@@ -24,10 +31,12 @@ public class MainPlayer : MonoBehaviour
 
     //今いるマスのインデックス　(分岐なし前提でスタートから連番)
     int _currentSquare = 0;
-    public int CurrentSquare { get { return _currentSquare; } }
+    public int CurrentSquare { get { return _currentSquare; } set { _currentSquare = value; } }
+    public Vector3 Position { set { transform.position = value;} }
 
     //所持ポイント
     int _point = 0;
+    public int Point { get { return _point; } set { _point = value; } }
 
     //所持アイテム
     //todo
@@ -51,7 +60,7 @@ public class MainPlayer : MonoBehaviour
     bool _isMove;
 
     //y位置　Startで取得　このカプセルモデルだと埋まるのでとりあえず　なくなるかも
-    float _yPos = 0.0f;
+    float _yPos = 0.86f;
     //みんなマスの中央だと重なるので四隅に寄ってもらう
     //けどデフォルトでそれだと見栄えが微妙だったので同じマスに重なったときだけズレてもらう処理にするか
     Vector3 _plOffset = Vector3.zero;
@@ -68,13 +77,24 @@ public class MainPlayer : MonoBehaviour
     void Start()
     {
         //y位置取得　0だと埋まるので
-        _yPos = transform.position.y;
+        //_yPos = transform.position.y;
+
+        ApplyPointText();
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    //オフセット適用
+    public void ApplyOffset()
+    {
+        Vector3 pos = transform.position + _plOffset;
+        pos.y = _yPos;
+
+        transform.position = pos;
     }
 
     //何Pか指定してオフセットを作成
@@ -94,7 +114,7 @@ public class MainPlayer : MonoBehaviour
                 _plOffset = new Vector3(-OFFSET_DURATION, 0.0f, -OFFSET_DURATION);
                 break;
             case 4:
-                _plOffset = new Vector3(-OFFSET_DURATION, 0.0f, OFFSET_DURATION);
+                _plOffset = new Vector3(OFFSET_DURATION, 0.0f, -OFFSET_DURATION);
                 break;
         }
     }
@@ -161,9 +181,13 @@ public class MainPlayer : MonoBehaviour
     public void AddCoin(int coin)
     {
         _point += coin;
-        //テキスト更新
-        TextPoint.text = _plNum + "P\n" + _point + "Point";
+        ApplyPointText();
     }
 
+    //テキスト更新
+    void ApplyPointText()
+    {
+        TextPoint.text = _plNum + "P\n" + _point + "Point";
+    }
 
 }
