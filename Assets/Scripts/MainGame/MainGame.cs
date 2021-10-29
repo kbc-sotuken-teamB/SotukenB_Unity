@@ -32,6 +32,15 @@ using UnityEngine.UI;
 
 //マスの座標を目的地に指定して　一つ一つ　目的地配列にして進んでいってもらおうか
 
+
+
+//ゲームデータの保持…
+//データ保持用スクリプト作って、プレイヤーの位置と持ち物だけ保持しといて、
+//スタートで呼ぶデータロード関数作ろう
+//任意の位置にプレイヤー配置、ポイントテキスト更新　とりあえずそれだけ
+
+
+
 public class MainGame : MonoBehaviour
 {
     public Text AnnounceText;
@@ -83,7 +92,7 @@ public class MainGame : MonoBehaviour
     //ミニゲームシーンの配列 ランダムインデックスで呼ぶ
     string[] _miniGameScenes = { SCENE_GEMIN, SCENE_SCROLL/*, SCENE_JUMP*/ };
 
-    string[] MINIGAME_TITLE = { "下民暮らし", "Run!Run!Run!", "ジャンプアスレチック" };
+    string[] MINIGAME_TITLE = { "下民暮らし", "らん・RUN・ラン", "JUMPアスレチック" };
 
     //今何Pのターンか
     int _currentPlayer = 1;
@@ -108,6 +117,8 @@ public class MainGame : MonoBehaviour
     GameObject[] _players;
 
     CameraFollowPlayer _cameraScript;
+
+    int _minigameInd = -1;
 
     // Start is called before the first frame update
     void Start()
@@ -269,6 +280,23 @@ public class MainGame : MonoBehaviour
             //移動終わったら
             Debug.Log("moveEnd");
 
+
+
+            //--ここでマスのイベントチェック
+            MainPlayer player = _players[_currentPlayer - 1].GetComponent<MainPlayer>();
+            int current = player.CurrentSquare;
+
+            //複数イベントマス作るときはswitchにする
+
+            //コインマスなら
+            if (_squares[current].gameObject.tag == "SquareAddCoin")
+            {
+                //コイン追加　とりあえず10
+                player.AddCoin(10);
+            }
+
+            
+
             //次のプレイヤー
             _currentPlayer += 1;
 
@@ -280,21 +308,27 @@ public class MainGame : MonoBehaviour
             //5になったら全員終わったので
             else
             {
-                int miniGameInd = Random.Range(0, _miniGameScenes.Length);
+                _minigameInd = Random.Range(0, _miniGameScenes.Length);
 
                 PanelBeginMiniGame.SetActive(true);
 
                 PanelBeginMiniGame.transform.Find("TextBeginMiniGame").GetComponent<Text>().text
-                    = "ミニゲーム" + MINIGAME_TITLE[miniGameInd] + "を開始します";
+                    = "ミニゲーム" + MINIGAME_TITLE[_minigameInd] + "を開始します";
 
-
+                //ミニゲームスタートボタン待機へ
                 _mainState = EnMainGameState.enWait;
-                
-                //ランダムでミニゲームを呼び出す
-                //SceneManager.LoadScene(_miniGameScenes[Random.Range(0, _miniGameScenes.Length)]);
             }
         }
     }
+
+    //一周後現れるミニゲームスタートボタンを押したらミニゲーム開始
+    public void BeginMiniGameButtonOnClick()
+    {
+        //ミニゲームシーンを呼び出す
+        SceneManager.LoadScene(_miniGameScenes[_minigameInd]);
+    }
+
+
 }
 
     //--出た目の数進む
