@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 //メインゲームのプレイヤースクリプト
 
@@ -9,6 +10,11 @@ using UnityEngine;
 
 public class MainPlayer : MonoBehaviour
 {
+    //--パラメータ
+    //とりあえず割り当てで　めんどくさいので本当は検索とか　メインゲームに持たせとくとか　自分で生成して持っとくとかの方がいい
+    public Text TextPoint;
+
+
     //----メンバ変数
 
     //--公開情報
@@ -150,5 +156,14 @@ public class MainPlayer : MonoBehaviour
         //まだ移動終わってない　継続
         return false;
     }
+
+
+    public void AddCoin(int coin)
+    {
+        _point += coin;
+        //テキスト更新
+        TextPoint.text = _plNum + "P\n" + _point + "Point";
+    }
+
 
 }
