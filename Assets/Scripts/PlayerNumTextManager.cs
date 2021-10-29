@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-//1P 2P…　みたいなテキストを生成してプレイヤーの頭にくっつけるやつ
+//▼1P ▼2P　みたいな表示テキスト生成してプレイヤーの頭にくっつけるやつ
 
 public class PlayerNumTextManager : MonoBehaviour
 {
-    //--パラメータ
+    //--参照
     //プレイヤーの親オブジェクト
     public GameObject PlayersParent;
     //テキストprefab

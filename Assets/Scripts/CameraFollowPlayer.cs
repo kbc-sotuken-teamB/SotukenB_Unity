@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//プレイヤーに追従するカメラ
 public class CameraFollowPlayer : MonoBehaviour
 {
+    //--参照
+    //プレイヤーの親オブジェクト
     public GameObject PlayersParent;
-
+    //1マス目がいい感じにカメラの真ん中にあるので目安位置マーカーとして使う
     public GameObject TargetPosition;
 
+    //カメラ位置＋オフセット＝追従カメラ
     Vector3 _cameraOffset;
 
     GameObject[] _players;
