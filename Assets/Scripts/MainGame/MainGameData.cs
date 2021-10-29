@@ -5,29 +5,30 @@ using UnityEngine;
 
 //データ保持用
 
-public class MainGaveData : MonoBehaviour
+public class MainGameData : MonoBehaviour
 {
-    public static MainGaveData InstanceMainGameData
+    public static MainGameData Instance
     {
         get; private set;
     }
 
 
     int[] _currentSquares = Enumerable.Repeat(0, 4).ToArray();
+    public int[] CurrentSquares { get { return _currentSquares; } }
     int[] _points = Enumerable.Repeat(0, 4).ToArray();
-
+    public int[] Points { get { return _points; } }
 
 
     private void Awake()
     {
-        if(InstanceMainGameData != null)
+        if(Instance != null)
         {
             Debug.Log("single destroy");
             Destroy(gameObject);
             return;
         }
 
-        InstanceMainGameData = this;
+        Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
@@ -42,7 +43,7 @@ public class MainGaveData : MonoBehaviour
         
     }
 
-
+    //セーブする
     public void SaveParam(int[] currentSquares, int[] points)
     {
         for(int i = 0; i < currentSquares.Length; i++)
@@ -53,10 +54,10 @@ public class MainGaveData : MonoBehaviour
     }
 
     //ロードはこっちからじゃなくて　メインゲーム側から取得した方がいいかな
-    public void LoadParam()
+    /*public void LoadParam()
     {
 
-    }
+    }*/
 
 
 }

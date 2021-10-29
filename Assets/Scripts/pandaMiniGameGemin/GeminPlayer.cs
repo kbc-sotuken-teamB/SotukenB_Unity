@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //プレイヤー
 
@@ -25,6 +26,7 @@ using UnityEngine;
 //普通に並べてるだけだと左右干渉するんで離して置いて画面分割するか
 //並べたままで仕切り置いてもいいか？　端に寄りまくると隣のレーンに降ってきたやつ横取りできちゃいそうから駄目か
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public class GeminPlayer : MonoBehaviour
 {
     //--パラメータ
@@ -33,7 +35,7 @@ public class GeminPlayer : MonoBehaviour
 
     //--定数
     //スピード
-    const float SPEED = 3.0f;
+    const float SPEED = 5.5f;
     //スタン時間設定
     const float STAN_DURATION = 3.0f;
 
@@ -41,7 +43,7 @@ public class GeminPlayer : MonoBehaviour
     //現在のポイント
     int _point = 0;
     //現在のスタンクールタイム
-    float _stanTime = 0.0f;
+    float _stanTime = 1.0f;
     //スタン状態か？
     bool _isStan = false;
 
@@ -50,7 +52,8 @@ public class GeminPlayer : MonoBehaviour
     string _plNumTextHorizontal;
     //キャラコン
     CharacterController _controller;
-
+    //スコア更新用オブジェクト
+    GameObject scoreObj;
 
     // Start is called before the first frame update
     void Start()
@@ -59,6 +62,8 @@ public class GeminPlayer : MonoBehaviour
         _controller = GetComponent<CharacterController>();
         //「○PHorizontal」のテキスト作成
         _plNumTextHorizontal = PlayerNum.ToString() + "PHorizontal";
+        //スコア更新用オブジェクト
+        scoreObj = GameObject.Find("ScoreManager");
     }
 
     // Update is called once per frame
@@ -104,15 +109,19 @@ public class GeminPlayer : MonoBehaviour
     //コインをキャッチ
     public void CatchCoin()
     {
-        //ポイント加算
-        _point += 1;
-        Debug.Log("point:" + _point);
+        if (!_isStan)
+        {
+            //ポイント加算
+            scoreObj.GetComponent<ScoreScript>().AddScore(PlayerNum - 1);
+
+            Debug.Log("point:" + _point);
+        }
     }
     //爆弾をキャッチ
     public void CatchBomb()
     {
         //ポイント減算
-        _point -= 1;
+        scoreObj.GetComponent<ScoreScript>().SubScore(PlayerNum - 1);
 
         //スタン中にする
         _isStan = true;
