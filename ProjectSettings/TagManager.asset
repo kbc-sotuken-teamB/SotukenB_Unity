@@ -6,7 +6,12 @@ TagManager:
   tags:
   - Coin
   - Bomb
+<<<<<<< HEAD
   - Text
+=======
+  - SquareAddCoin
+  - Square
+>>>>>>> cc99e8ec72c272272b7fba03b9454a83a72c0d7e
   layers:
   - Default
   - TransparentFX
