@@ -88,15 +88,15 @@ public class MainGame : MonoBehaviour
     //ミニゲームシーン名
     const string SCENE_GEMIN = "MiniGameGeminScene";
     const string SCENE_SCROLL = "MiniGameSideScrolling";
-    //const string SCENE_JUMP = "MiniGameJumpAthleticScene";
+    const string SCENE_JUMP = "MiniGamejump";
     //ミニゲームシーンの配列 ランダムインデックスで呼ぶ
-    string[] _miniGameScenes = { SCENE_GEMIN, SCENE_SCROLL/*, SCENE_JUMP*/ };
+    string[] _miniGameScenes = { SCENE_GEMIN, SCENE_SCROLL, SCENE_JUMP };
 
     string[] MINIGAME_TITLE = { "下民暮らし", "らん・RUN・ラン", "JUMPアスレチック" };
 
     //今何Pのターンか
     int _currentPlayer = 1;
-    bool _isIdle = true;
+    //bool _isIdle = true;
     //「○PButtonA」
     string _plInputTextA;
 
@@ -104,7 +104,7 @@ public class MainGame : MonoBehaviour
     float _coolTime = 0.0f;
 
     //ダイスの初期位置
-    Vector3 _dicePos;
+    //Vector3 _dicePos;
 
     //プレイヤーの移動前位置
     //Vector3 _plPosOld;
@@ -120,16 +120,21 @@ public class MainGame : MonoBehaviour
 
     int _minigameInd = -1;
 
+    Vector3 _dicePosOffset;
+
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("First:" + _currentPlayer + "P");
+        /*Debug.Log("First:" + _currentPlayer + "P");
         AnnounceText.text = "1Pのターン！";
         TextA.SetActive(true);
 
-        _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
+        _plInputTextA = _currentPlayer.ToString() + BUTTON_A;*/
+
+
         //サイコロの初期位置取得しておく
-        _dicePos = Dice.transform.position;
+        //_dicePos = Dice.transform.position;
+        _dicePosOffset = Camera.main.transform.position - Dice.transform.position;
 
         //マスを上から順に取得 仮リストに入れて
         List<Transform> tmp = new List<Transform>();
@@ -154,6 +159,11 @@ public class MainGame : MonoBehaviour
         }
 
         _cameraScript = Camera.main.GetComponent<CameraFollowPlayer>();
+
+        //保持していたデータロード
+        LoadParam();
+
+        StartCoroutine(PlayerTurn());
     }
 
     // Update is called once per frame
@@ -183,8 +193,30 @@ public class MainGame : MonoBehaviour
             default:
                 break;
         }
-
     }
+
+    //保持していたデータロード
+    void LoadParam()
+    {
+        //シーン跨いで保持されるメインゲームデータ
+        MainGameData mainGameData = MainGameData.Instance;
+
+
+        for(int i = 0; i < _players.Length; i++)
+        {
+            MainPlayer pl = _players[i].GetComponent<MainPlayer>();
+
+            //現在のマス
+            pl.CurrentSquare = mainGameData.CurrentSquares[i];
+            //現在位置
+            pl.Position = _squares[pl.CurrentSquare].position;
+            pl.ApplyOffset();
+
+            //現在のポイント
+            pl.Point = mainGameData.Points[i];
+        }
+    }
+
 
     //Aボタンでサイコロ振る待機
     void PressA()
@@ -201,42 +233,38 @@ public class MainGame : MonoBehaviour
         }
     }
 
-    private IEnumerator NextState(EnMainGameState nextState)
-    {
-        _mainState = EnMainGameState.enWait;
-        yield return new WaitForSeconds(1f);
-        _mainState = nextState;
-
-    }
-
     //ダイスが振られる
     void DiceRoll()
     {
         //クールタイム加算
         _coolTime += Time.deltaTime;
-        //1秒立ったらとりあえず終わり
-        if (_coolTime > 1.0f)
+        //1秒ぐらい経ったらとりあえずサイコロ動作終わり
+        if (_coolTime > 1.5f)
         {
             //サイコロを止める
             Dice.GetComponent<Rigidbody>().isKinematic = true;
             //サイコロを初期位置へ
-            Dice.transform.position = _dicePos;
-            Dice.transform.rotation = Quaternion.identity;
+            //Dice.transform.position = _dicePos;
+            //Dice.transform.rotation = Quaternion.identity;
+            Dice.SetActive(false);
 
             Debug.Log("diceEnd");
 
 
             //サイコロの出目　（仮）ランダム　本物ではサイコロの上面を判定する
-            int dice = Random.Range(1, 6);
+            int dice = Random.Range(1, 7);
             AnnounceText.text = _currentPlayer + "Pは" + dice + "マス進みます" ;
             Debug.Log(_currentPlayer + "P: " + dice);
 
+            //プレイヤー取得
             MainPlayer player = _players[_currentPlayer - 1].GetComponent<MainPlayer>();
+            //プレイヤーの現在マス取得
             int plSquare = player.CurrentSquare;
 
             List<Vector3> targetPosList = new List<Vector3>();
             for(int i = 1; i <= dice; i++)
             {
+                //マスの座標を移動対象座標として追加
                 targetPosList.Add(_squares[plSquare + i].position);
             }
 
@@ -249,6 +277,16 @@ public class MainGame : MonoBehaviour
             //コルーチン
             StartCoroutine(NextState(EnMainGameState.enMovePlayer));
         }
+    }
+
+    private IEnumerator NextState(EnMainGameState nextState)
+    {
+        //待機ステート
+        _mainState = EnMainGameState.enWait;
+        //1秒待って
+        yield return new WaitForSeconds(1f);
+        //次のステートへ
+        _mainState = nextState;
 
     }
 
@@ -260,6 +298,16 @@ public class MainGame : MonoBehaviour
 
         _cameraScript.ChangeFollow(_currentPlayer);
 
+        StartCoroutine(PlayerTurn());
+    }
+
+    IEnumerator PlayerTurn()
+    {
+        yield return null;
+
+        Dice.transform.position = Camera.main.transform.position - _dicePosOffset;
+        Dice.SetActive(true);
+
         _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
 
         Debug.Log("Next:" + _currentPlayer + "P");
@@ -268,7 +316,6 @@ public class MainGame : MonoBehaviour
 
         //サイコロ待機へ
         _mainState = EnMainGameState.enIdle;
-
     }
 
     //プレイヤーが進む
@@ -295,7 +342,19 @@ public class MainGame : MonoBehaviour
                 player.AddCoin(10);
             }
 
-            
+
+            int[] squares = new int[_players.Length];
+            int[] points = new int[_players.Length];
+            for(int i = 0; i < _players.Length; i++)
+            {
+                MainPlayer pl = _players[i].GetComponent<MainPlayer>();
+                squares[i] = pl.CurrentSquare;
+                points[i] = pl.Point;
+            }
+
+            MainGameData.Instance.SaveParam(squares, points);
+
+
 
             //次のプレイヤー
             _currentPlayer += 1;
@@ -330,8 +389,3 @@ public class MainGame : MonoBehaviour
 
 
 }
-
-    //--出た目の数進む
-    //--プレイヤーごとのカレントマスデータも記録しないとな
-    //--踏んだマスに応じてイベント
-

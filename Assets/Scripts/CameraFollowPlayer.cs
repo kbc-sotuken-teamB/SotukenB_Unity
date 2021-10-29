@@ -6,6 +6,8 @@ public class CameraFollowPlayer : MonoBehaviour
 {
     public GameObject PlayersParent;
 
+    public GameObject TargetPosition;
+
     Vector3 _cameraOffset;
 
     GameObject[] _players;
@@ -24,7 +26,9 @@ public class CameraFollowPlayer : MonoBehaviour
             _players[i] = PlayersParent.transform.GetChild(i).gameObject;
         }
 
-        _cameraOffset = transform.position - _players[0].transform.position;
+        _cameraOffset = transform.position - TargetPosition.transform.position;
+        //~プレイヤーの高さ
+        _cameraOffset.y -= 0.86f;
     }
 
     // Update is called once per frame
