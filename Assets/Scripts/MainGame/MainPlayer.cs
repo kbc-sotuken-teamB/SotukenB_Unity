@@ -18,7 +18,6 @@ using UnityEngine.UI;
 
 public class MainPlayer : MonoBehaviour
 {
-    //--パラメータ
     //とりあえず割り当てで　めんどくさいので本当は検索とか　メインゲームに持たせとくとか　自分で生成して持っとくとかの方がいい
     public Text TextPoint;
 

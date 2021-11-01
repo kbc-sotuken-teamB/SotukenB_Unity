@@ -43,6 +43,7 @@ using UnityEngine.UI;
 
 public class MainGame : MonoBehaviour
 {
+    //--参照
     public Text AnnounceText;
 
     //とりあえずデバッグで動かすだけのプレイヤー1
