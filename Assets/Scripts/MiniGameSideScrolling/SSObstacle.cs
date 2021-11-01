@@ -8,8 +8,7 @@ public class SSObstacle : MonoBehaviour
     private int yokoNum = 5;      //障害物を横に並べる数
     private int yokoMax = 4;      //障害物横の最大数
     private int tateNum = 10;      //障害物縦の数
-    private List<GameObject> GOList = new List<GameObject>();
-    private Vector3 startVector = new Vector3(0.0f, 0.0f, 0.0f);
+    private Vector3 startPosition = new Vector3(0.0f, 0.0f, 0.0f);
     private const float moveZ = 7.0f;//縦にずらす距離。
     private const float moveX = 3.0f;//1マスの横のサイズ。
     public GameObject obstract;
@@ -17,17 +16,17 @@ public class SSObstacle : MonoBehaviour
     {
         for (int i = 0; i < tateNum; i++)//縦
         {
-            startVector.z += moveZ;//初期座標のままだとプレイヤーと被るので少し前に持っていく
-            startVector.x = -10.5f;//初期座標を先のコードでずらしてるから戻す。
+            startPosition.z += moveZ;//初期座標のままだとプレイヤーと被るので少し前に持っていく
+            startPosition.x = -10.5f;//初期座標を先のコードでずらしてるから戻す。
             int createCount = 0;
             for (int j = 0; j < yokoNum; j++)//横
             {
                 if (createCount < yokoMax && BoolRandom() == true)
                 {
-                    obstract =　(GameObject)Instantiate(obstract, startVector, Quaternion.identity);//座標と回転を設定してインスタンスを生成
+                    obstract =　(GameObject)Instantiate(obstract, startPosition, Quaternion.identity);//座標と回転を設定してインスタンスを生成
                     createCount++;
                 }
-                startVector.x += moveX;//1マス分横にずらす
+                startPosition.x += moveX;//1マス分横にずらす
             }
         }
         return true;
