@@ -35,7 +35,7 @@ public class GeminPlayer : MonoBehaviour
 
     //--定数
     //スピード
-    const float SPEED = 5.5f;
+    const float SPEED = 8.5f;
     //スタン時間設定
     const float STAN_DURATION = 3.0f;
 
