@@ -4,6 +4,8 @@ using System.Linq;
 using UnityEngine;
 
 //データ保持用
+//プレイヤーそれぞれの現在マスとポイント、アイテムのデータのみ保持
+//MainGame開始時にロードして再配置する
 
 public class MainGameData : MonoBehaviour
 {
@@ -12,15 +14,17 @@ public class MainGameData : MonoBehaviour
         get; private set;
     }
 
-
+    //プレイヤーたちの現在マス
     int[] _currentSquares = Enumerable.Repeat(0, 4).ToArray();
     public int[] CurrentSquares { get { return _currentSquares; } }
+    //プレイヤーたちの所持ポイント
     int[] _points = Enumerable.Repeat(0, 4).ToArray();
     public int[] Points { get { return _points; } }
 
 
     private void Awake()
     {
+        //既に存在したら消す
         if(Instance != null)
         {
             Debug.Log("single destroy");
@@ -29,6 +33,7 @@ public class MainGameData : MonoBehaviour
         }
 
         Instance = this;
+        //シーン遷移しても消えないようにする
         DontDestroyOnLoad(gameObject);
     }
 
@@ -43,7 +48,8 @@ public class MainGameData : MonoBehaviour
         
     }
 
-    //セーブする
+    //データセーブ　メインゲームから他シーンへの遷移前に呼ぶ
+    //セーブ項目多くなったら構造体にしようか
     public void SaveParam(int[] currentSquares, int[] points)
     {
         for(int i = 0; i < currentSquares.Length; i++)
@@ -52,12 +58,4 @@ public class MainGameData : MonoBehaviour
             _points[i] = points[i];
         }
     }
-
-    //ロードはこっちからじゃなくて　メインゲーム側から取得した方がいいかな
-    /*public void LoadParam()
-    {
-
-    }*/
-
-
 }

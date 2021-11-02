@@ -38,6 +38,10 @@ public class MainPlayer : MonoBehaviour
     int _point = 0;
     public int Point { get { return _point; } set { _point = value; } }
 
+    //ゴールした？
+    bool _isGoal = false;
+    public bool IsGoal { get { return _isGoal; } set { _isGoal = value; } }
+
     //所持アイテム
     //todo
 
