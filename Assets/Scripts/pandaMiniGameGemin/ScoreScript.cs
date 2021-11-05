@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ScoreScript : MonoBehaviour
 {
@@ -52,6 +53,8 @@ public class ScoreScript : MonoBehaviour
 
         if(TIME_END <= 0)
         {
+            SceneManager.LoadScene("MainGameScene");
+
             //gameManager.GetComponent<GeminGameManager>().ChangeGameMode();
         }
         else
