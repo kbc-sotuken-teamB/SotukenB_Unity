@@ -4,6 +4,8 @@ using System.Linq;
 using UnityEngine;
 
 //データ保持用
+//プレイヤーそれぞれの現在マスとポイント、アイテムのデータのみ保持
+//MainGame開始時にロードして再配置する
 
 public class MainGameData : MonoBehaviour
 {
@@ -12,15 +14,37 @@ public class MainGameData : MonoBehaviour
         get; private set;
     }
 
+    //構造体
+    public struct SMainGameData
+    {
+        //プレイヤーたちの現在マス
+        public int[] CurrentSquares;
+        //プレイヤーたちの所持ポイント
+        public int[] Points;
+        //今何Pのターンか
+        public int CurrentPlayer;
+        //今何ターン目か
+        public int CurrentTurn;
+    }
 
-    int[] _currentSquares = Enumerable.Repeat(0, 4).ToArray();
+    SMainGameData _sMainGameData;
+    public SMainGameData SMainData { get { return _sMainGameData; } }
+
+    //これ構造体使う必要あるか？
+    //外から読み込むときMainGameDataのgameObjectとかと混ざってゴチャッとせず分かりやすくなった
+
+
+    //プレイヤーたちの現在マス
+    /*int[] _currentSquares = Enumerable.Repeat(0, 4).ToArray();
     public int[] CurrentSquares { get { return _currentSquares; } }
+    //プレイヤーたちの所持ポイント
     int[] _points = Enumerable.Repeat(0, 4).ToArray();
-    public int[] Points { get { return _points; } }
+    public int[] Points { get { return _points; } }*/
 
 
     private void Awake()
     {
+        //既に存在したら消す
         if(Instance != null)
         {
             Debug.Log("single destroy");
@@ -28,7 +52,21 @@ public class MainGameData : MonoBehaviour
             return;
         }
 
+        //構造体初期化
+        _sMainGameData = new SMainGameData
+        {
+            //0埋め
+            CurrentSquares = Enumerable.Repeat(0, 4).ToArray(),
+            //0埋め
+            Points = Enumerable.Repeat(0, 4).ToArray(),
+            //0
+            CurrentPlayer = 0,
+            //1
+            CurrentTurn = 1,
+        };
+
         Instance = this;
+        //シーン遷移しても消えないようにする
         DontDestroyOnLoad(gameObject);
     }
 
@@ -43,21 +81,18 @@ public class MainGameData : MonoBehaviour
         
     }
 
-    //セーブする
-    public void SaveParam(int[] currentSquares, int[] points)
+    //データセーブ　メインゲームから他シーンへの遷移前に呼ぶ
+    //セーブ項目多くなったら構造体にしようか
+    /*public void SaveParam(int[] currentSquares, int[] points)
     {
         for(int i = 0; i < currentSquares.Length; i++)
         {
             _currentSquares[i] = currentSquares[i];
             _points[i] = points[i];
         }
-    }
-
-    //ロードはこっちからじゃなくて　メインゲーム側から取得した方がいいかな
-    /*public void LoadParam()
-    {
-
     }*/
-
-
+    public void SaveParam(SMainGameData mainGameData)
+    {
+        _sMainGameData = mainGameData;
+    }
 }
