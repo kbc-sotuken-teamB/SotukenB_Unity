@@ -10,20 +10,11 @@ public class SSPlayersScore : MonoBehaviour
     public GameObject score3P = null; // Textオブジェクト
     public GameObject score4P = null; // Textオブジェクト
     public GameObject Timer = null; // Text_Timer
-
-    /*
-    public int score_num1P = 0; // スコア変数
-    public int score_num2P = 0; // スコア変数
-    public int score_num3P = 0; // スコア変数
-    public int score_num4P = 0; // スコア変数
-    */
-
     public int[] score = new int[4] { 0, 0, 0, 0 };
 
     // Start is called before the first frame update
     void Start()
     {
-
     }
 
     // Update is called once per frame

@@ -37,7 +37,7 @@ public class SSWallMove : MonoBehaviour
             }
         }
     }
-
+        
     private void Find()
     {
         string playerName = "Player";
