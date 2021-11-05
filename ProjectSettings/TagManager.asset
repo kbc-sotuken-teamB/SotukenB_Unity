@@ -9,6 +9,7 @@ TagManager:
   - Text
   - SquareAddCoin
   - Square
+  - SquareMinigame
   layers:
   - Default
   - TransparentFX

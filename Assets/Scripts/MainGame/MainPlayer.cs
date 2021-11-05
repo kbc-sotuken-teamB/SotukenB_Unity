@@ -38,6 +38,10 @@ public class MainPlayer : MonoBehaviour
     int _point = 0;
     public int Point { get { return _point; } set { _point = value; } }
 
+    //ゴールした？
+    bool _isGoal = false;
+    public bool IsGoal { get { return _isGoal; } set { _isGoal = value; } }
+
     //所持アイテム
     //todo
 
@@ -65,9 +69,11 @@ public class MainPlayer : MonoBehaviour
     //けどデフォルトでそれだと見栄えが微妙だったので同じマスに重なったときだけズレてもらう処理にするか
     Vector3 _plOffset = Vector3.zero;
 
+    bool _isFast = false;
+
 
     //--定数
-    //何秒で移動するか (とりあえず1.0なので存在する意味はないけど)
+    //何秒で移動するかのデフォルト (とりあえず1.0なので存在する意味はないけど)
     const float MOVE_DURATION = 1.0f;
     //オフセットの間隔
     const float OFFSET_DURATION = 0.66f;
@@ -79,13 +85,15 @@ public class MainPlayer : MonoBehaviour
         //y位置取得　0だと埋まるので
         //_yPos = transform.position.y;
 
+        //ポイントをテキストに反映
         ApplyPointText();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        //Pキーで移動早送り
+        _isFast = Input.GetKey(KeyCode.P);
     }
 
     //オフセット適用
@@ -143,7 +151,10 @@ public class MainPlayer : MonoBehaviour
 
 
         //移動進行度加算
-        _moveTime = Mathf.Min(MOVE_DURATION, _moveTime + Time.deltaTime);
+        float deltaTime = Time.deltaTime;
+        //早送り
+        if (_isFast) deltaTime *= 2.0f;
+        _moveTime = Mathf.Min(MOVE_DURATION, _moveTime + deltaTime);
 
         //y位置調整やオフセット
         Vector3 targetPos = _targetPosList[_targetPosListInd];
