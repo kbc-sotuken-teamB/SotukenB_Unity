@@ -11,6 +11,7 @@ public class SSGoal : MonoBehaviour
     private GameObject goal;
     private int playerMax = 4;
     private bool[] winnerNum = new bool[4];
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -30,32 +31,39 @@ public class SSGoal : MonoBehaviour
 
     private void Update()
     {
-        PlayerDeath();
-    }
-
-    private void LoadNextScene()
-    {
-        SceneManager.LoadScene("MainGameScene");
+        GoalOrDead();
     }
 
     //プレイヤーが死んだとき
-    private bool[] deathPlayer = new bool[4];
-    private void PlayerDeath()
+    private bool[] isGoalOrDead = new bool[4];
+
+    private void GoalOrDead()
     {
         for (int i = 0; i < playerMax; i++)
         {
-            if (player[i].transform.position.y < -100)
+            if (player[i].transform.position.y < -100   //プレイヤーが死んだとき(Y座標を下げてるので
+                || player[i].transform.position.z > goal.transform.position.z//プレイヤーがゴールより奥に行ったとき
+                )
             {
-                deathPlayer[i] = true;
+                isGoalOrDead[i] = true;
                 if (
-                    deathPlayer[0] == true &&
-                    deathPlayer[1] == true &&
-                    deathPlayer[2] == true &&
-                    deathPlayer[3] == true)
+                    isGoalOrDead[0] == true &&
+                    isGoalOrDead[1] == true &&
+                    isGoalOrDead[2] == true &&
+                    isGoalOrDead[3] == true)
                 {
                     LoadNextScene();
                 }
             }
         }
+    }
+    private void IsGoal()
+    {
+        
+    }
+
+    private void LoadNextScene()
+    {
+        SceneManager.LoadScene("MainGameScene");
     }
 }
