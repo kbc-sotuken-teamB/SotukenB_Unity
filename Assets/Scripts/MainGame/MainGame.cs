@@ -71,7 +71,7 @@ public class MainGame : MonoBehaviour
     const string BUTTON_A = "PButtonA";
 
     //ミニゲームシーン名
-    const string SCENE_GEMIN = "MiniGameGeminScene";
+    const string SCENE_GEMIN = "MinGameGEMIN";
     const string SCENE_SCROLL = "MiniGameSideScrolling";
     const string SCENE_JUMP = "MiniGamejump";
     //ミニゲームシーンの配列 ランダムインデックスで呼ぶ
@@ -452,6 +452,8 @@ public class MainGame : MonoBehaviour
     //データセーブ
     void SaveParam()
     {
+        Debug.Log("DataSave");
+
         //宣言
         int[] squares = new int[_players.Length];
         int[] points = new int[_players.Length];
