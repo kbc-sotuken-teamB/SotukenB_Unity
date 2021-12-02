@@ -114,12 +114,13 @@ public class GeminGameManager : MonoBehaviour
                     //クールタイムをリセット
                     _timeFall = 0.0f;
 
-                    //miniGameMode = EnGameMode.enEndMode;
+                   //miniGameMode = EnGameMode.enEndMode;
                 }
                 break;
 
             case EnGameMode.enEndMode:
                 //ミニゲームが終了したので順位の判定を行う
+                
 
 
                 break;

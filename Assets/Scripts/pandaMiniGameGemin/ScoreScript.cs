@@ -17,12 +17,12 @@ public class ScoreScript : MonoBehaviour
     //時間切れ
     float TIME_END = 10.0f;
 
-    GameObject gameManager;
+    public GameObject gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        gameManager = GameObject.Find("GeminGameManager");
+        gameManager = GameObject.Find("GameObject");
     }
 
     // Update is called once per frame
@@ -53,9 +53,11 @@ public class ScoreScript : MonoBehaviour
 
         if(TIME_END <= 0)
         {
-            SceneManager.LoadScene("MainGameScene");
+            //SceneManager.LoadScene("MainGameScene");
 
-            //gameManager.GetComponent<GeminGameManager>().ChangeGameMode();
+            gameManager.GetComponent<GeminGameManager>().ChangeGameMode();
+
+            //miniGameMode = EnGameMode.enEndMode;
         }
         else
         {
