@@ -6,6 +6,8 @@ using UnityEngine;
  */
 public class DeleteScript : MonoBehaviour
 {
+   
+    //死ぬまでの時間
     float DELETE_TIME = 2.0f;
 
     // Start is called before the first frame update
@@ -22,5 +24,9 @@ public class DeleteScript : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
+        //Vector3 pPos = GameObject.Find("player").transform.position;
+        //Vector3 itemPos = this.gameObject.transform.position;
+
     }
 }
