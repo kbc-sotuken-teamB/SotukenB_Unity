@@ -12,6 +12,7 @@ public class SSGoal : MonoBehaviour
     private int playerMax = 4;
     private bool[] winnerNum = new bool[4];
 
+    
     // Start is called before the first frame update
     private void Start()
     {
