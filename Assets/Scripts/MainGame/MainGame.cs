@@ -40,6 +40,8 @@ public class MainGame : MonoBehaviour
 
     //ダイス
     public GameObject Dice;
+
+    public GameObject DiceArea;
     //マスの親オブジェクト(フォルダ代わり)　ここから順番にマスを取得
     public GameObject SquaresParent;
 
@@ -59,6 +61,7 @@ public class MainGame : MonoBehaviour
     {
         enWait,
         enDiceRoll,
+        enDiceEnd,
         enMovePlayer,
         enIdle,
         //enNextPlayer
@@ -103,6 +106,9 @@ public class MainGame : MonoBehaviour
     Vector3 _dicePosOffset;
 
     bool _isFirst = true;
+
+
+    int _diceNum;
 
     // Start is called before the first frame update
     void Start()
@@ -166,6 +172,10 @@ public class MainGame : MonoBehaviour
                 DiceRoll();
                 break;
 
+            case EnMainGameState.enDiceEnd:
+                DiceEndMove();
+                break;
+
             case EnMainGameState.enMovePlayer:
                 //進む
                 MovePlayer();
@@ -212,10 +222,16 @@ public class MainGame : MonoBehaviour
         }
     }
 
+    void DiceRotation()
+    {
+        Dice.transform.Rotate(new Vector3(0, -1.9f, 2), Space.Self);
+    }
 
     //Aボタンでサイコロ振る待機
     void PressA()
     {
+        //サイコロ回転
+        DiceRotation();
         //Aボタン押したら
         if (Input.GetButtonUp(_plInputTextA))
         {
@@ -225,21 +241,22 @@ public class MainGame : MonoBehaviour
             _mainState = EnMainGameState.enDiceRoll;
             //クールタイムをリセット（仮なので時間でサイコロ止まる）
             _coolTime = 0.0f;
-            //サイコロのkinematicを解除して動かす
-            Dice.GetComponent<Rigidbody>().isKinematic = false;
+            //サイコロの重力をオンにして動かす
+            Dice.GetComponent<Rigidbody>().useGravity = true;
+            Dice.GetComponent<Rigidbody>().AddForce(new Vector3(0, 300, 0));
         }
     }
 
     //ダイスが振られる
-    void DiceRoll()
+    /*void DiceRoll()
     {
         //クールタイム加算
         _coolTime += Time.deltaTime;
         //1秒ぐらい経ったらとりあえずサイコロ動作終わり
-        if (_coolTime > 1.5f)
+        if (_coolTime > 3f)
         {
             //サイコロを止める
-            Dice.GetComponent<Rigidbody>().isKinematic = true;
+            Dice.GetComponent<Rigidbody>().useGravity = false;
             //サイコロを見えなくする
             Dice.SetActive(false);
             //サイコロの回転をリセット
@@ -273,17 +290,174 @@ public class MainGame : MonoBehaviour
             //コルーチンでプレイヤーが進むステートへ
             StartCoroutine(NextStateCoroutine(EnMainGameState.enMovePlayer));
         }
+    }*/
+
+    void DiceRoll()
+    {
+        //クールタイム加算
+        _coolTime += Time.deltaTime;
+
+        //Debug.Log(Dice.GetComponent<Rigidbody>().velocity.magnitude);
+
+        //少しの間まだ回転しててもらう
+        if(_coolTime < 1.0f)
+        {
+            //サイコロ回転
+            DiceRotation();
+        }
+        //止まったら もしくは10秒経ったら
+        else if (Dice.GetComponent<Rigidbody>().velocity.magnitude < 0.0001f || _coolTime > 10f)
+        {
+            StartCoroutine(DiceEnd());
+        }
     }
 
-    private IEnumerator NextStateCoroutine(EnMainGameState nextState)
+    int GetNumber()
+    {
+        int result = 0;
+
+        float innerProductX = Vector3.Dot(Dice.transform.right, Vector3.up);
+        float innerProductY = Vector3.Dot(Dice.transform.up, Vector3.up);
+        float innerProductZ = Vector3.Dot(Dice.transform.forward, Vector3.up);
+
+        Debug.Log("X:" + innerProductX);
+        Debug.Log("Y:" + innerProductY);
+        Debug.Log("Z:" + innerProductZ);
+
+        if ((Mathf.Abs(innerProductX) > Mathf.Abs(innerProductY)) && (Mathf.Abs(innerProductX) > Mathf.Abs(innerProductZ)))
+        {
+            // X軸が一番近い
+            if (innerProductX > 0f) result = 2;
+            else result = 5;
+        }
+        else if ((Mathf.Abs(innerProductY) > Mathf.Abs(innerProductX)) && (Mathf.Abs(innerProductY) > Mathf.Abs(innerProductZ)))
+        {
+            // Y軸が一番近い
+            if (innerProductY > 0f) result = 4;
+            else result = 3;
+        }
+        else
+        {
+            // Z軸が一番近い
+            if (innerProductZ > 0f) result = 1;
+            else result = 6;
+        }
+
+        return result;
+    }
+
+    void DiceEndMove()
+    {
+        if (Dice.GetComponent<Dice>().Move())
+        {
+            //メッセージ
+            AnnounceText.text = _currentPlayer + "Pは" + _diceNum + "マス進みます";
+            Debug.Log(_currentPlayer + "P: " + _diceNum);
+
+            //プレイヤー取得
+            MainPlayer player = _players[_currentPlayer - 1].GetComponent<MainPlayer>();
+            //プレイヤーの現在マス取得
+            int plSquare = player.CurrentSquare;
+
+            //プレイヤーの移動対象の座標リストにする
+            List<Vector3> targetPosList = new List<Vector3>();
+            for (int i = 1; i <= _diceNum && plSquare + i < _squares.Length; i++)
+            {
+                //マスの座標を移動対象座標として追加
+                targetPosList.Add(_squares[plSquare + i].position);
+            }
+
+            //プレイヤー移動初期化
+            player.InitMove(targetPosList);
+
+            //コルーチンでプレイヤーが進むステートへ
+            StartCoroutine(NextPlayerStateCoroutine());
+        }
+    }
+
+    private IEnumerator DiceEnd()
+    {
+        _mainState = EnMainGameState.enWait;
+
+        yield return new WaitForSeconds(0.3f);
+
+        //サイコロの出目
+        //int dice = Random.Range(7, 7);
+        //int dice = Random.Range(1, 7);
+        _diceNum = GetNumber();
+
+        Vector3 diceAngle = Vector3.zero;
+
+        switch (_diceNum)
+        {
+            case 1:
+                diceAngle = new Vector3(0, 180, 0);
+                break;
+            case 2:
+                diceAngle = new Vector3(0, 90, 0);
+                break;
+            case 3:
+                diceAngle = new Vector3(90, 0, 0);
+                break;
+            case 4:
+                diceAngle = new Vector3(-90, 0, 0);
+                break;
+            case 5:
+                diceAngle = new Vector3(0, -90, 0);
+                break;
+            case 6:
+                break;
+        }
+
+
+        //サイコロを止める
+        Dice.GetComponent<Rigidbody>().isKinematic = true;
+        //サイコロを見えなくする
+        //Dice.SetActive(false);
+        //サイコロの回転をリセット
+        //Dice.transform.rotation = Quaternion.identity;
+
+        Dice.GetComponent<Dice>().InitMove(Camera.main.transform.position - _dicePosOffset, diceAngle);
+
+        //出た目の位置へ回転
+        //Dice.transform.eulerAngles = _diceAngle;
+        //初期位置
+        //Dice.transform.position = Camera.main.transform.position - _dicePosOffset;
+
+        Debug.Log("diceEnd");
+
+        _mainState = EnMainGameState.enDiceEnd;
+    }
+
+    private IEnumerator NextStateCoroutine(EnMainGameState nextState, float wait = 1.0f)
     {
         //待機ステートにする
         _mainState = EnMainGameState.enWait;
         //1秒待って
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(wait);
         //次のステートへ
         _mainState = nextState;
 
+    }
+
+    private IEnumerator NextPlayerStateCoroutine()
+    {
+        //待機ステートにする
+        _mainState = EnMainGameState.enWait;
+        //1秒待って
+        yield return new WaitForSeconds(1.0f);
+
+        //サイコロ
+        Dice.GetComponent<Rigidbody>().isKinematic = false;
+        Dice.GetComponent<Rigidbody>().useGravity = false;
+        //サイコロを見えなくする
+        Dice.SetActive(false);
+        DiceArea.SetActive(false);
+        //サイコロの回転をリセット
+        Dice.transform.rotation = Quaternion.identity;
+
+        //次のステートへ
+        _mainState = EnMainGameState.enMovePlayer;
     }
 
     IEnumerator NextPlayerCoroutine()
@@ -313,8 +487,12 @@ public class MainGame : MonoBehaviour
         yield return null;
         //1フレーム待ってカメラが合わさってから
         //カメラから一定の位置にサイコロを置く
-        Dice.transform.position = Camera.main.transform.position - _dicePosOffset;
+        Vector3 dicePos = Camera.main.transform.position - _dicePosOffset;
+        Dice.transform.position = dicePos;
+        dicePos.y += 1.0f;
+        DiceArea.transform.position = dicePos;
         Dice.SetActive(true);
+        DiceArea.SetActive(true);
 
         //◯PのAボタンのキー設定
         _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
