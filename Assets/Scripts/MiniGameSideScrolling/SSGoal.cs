@@ -7,60 +7,46 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class SSGoal : MonoBehaviour
 {
-    private GameObject[] player;//プレイヤー
+    public GameObject[] player;//プレイヤー
     private GameObject goal;
     private int playerMax = 4;
-    private bool[] winnerNum = new bool[4];
-
+    private bool[] isWin = new bool[4];
+    
+    Ranking rank;
     
     // Start is called before the first frame update
     private void Start()
     {
-        //プレイヤー4人を探す
-        string playerName = "Player";
-        player = new GameObject[5];
-        for (int i = 0; i < 4; i++)
-        {
-            string num = i.ToString();//変数iを文字に変換
-            player[i] = GameObject.Find(playerName + num);//プレイヤーを名前検索
-        }
+        
         //ゴールを探す。
         goal = GameObject.Find("Goal");
+        rank = GetComponent<Ranking>();
     }
 
     // Update is called once per frame
 
     private void Update()
     {
-        GoalOrDead();
+        IsGoal();
     }
 
     //プレイヤーが死んだとき
     private bool[] isGoalOrDead = new bool[4];
 
-    private void GoalOrDead()
+    private void IsGoal()
     {
         for (int i = 0; i < playerMax; i++)
         {
-            if (player[i].transform.position.y < -100   //プレイヤーが死んだとき(Y座標を下げてるので
-                || player[i].transform.position.z > goal.transform.position.z//プレイヤーがゴールより奥に行ったとき
-                )
-            {
-                isGoalOrDead[i] = true;
-                if (
-                    isGoalOrDead[0] == true &&
-                    isGoalOrDead[1] == true &&
-                    isGoalOrDead[2] == true &&
-                    isGoalOrDead[3] == true)
-                {
-                    LoadNextScene();
-                }
+           if(player[i].transform.position.z > goal.transform.position.z) {
+                isWin[i] = true;
+                rank.HerasuRemainingPlayer();
             }
         }
     }
-    private void IsGoal()
+
+    public bool IsWinner(int num)
     {
-        
+        return isWin[num];
     }
 
     private void LoadNextScene()
