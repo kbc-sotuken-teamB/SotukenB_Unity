@@ -299,7 +299,6 @@ MonoBehaviour:
   - {fileID: 676890692}
   - {fileID: 257722831}
   - {fileID: 259288497}
-  rank: {fileID: 1202168855}
 --- !u!114 &88644186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1116,6 +1115,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1202168856}
+  - component: {fileID: 1202168857}
   m_Layer: 0
   m_Name: Ranking
   m_TagString: Untagged
@@ -1137,6 +1137,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1202168857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1202168855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4005cbefb230724fae214cbae992f8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Score: 0a000000050000000300000000000000
 --- !u!1 &1392796963
 GameObject:
   m_ObjectHideFlags: 0
