@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Floor : MonoBehaviour
 {
-    float speed = 0.007f;
+    public float speed = 0.007f;
     private Vector3 size = Vector3.one;
     // Start is called before the first frame update
     void Start()

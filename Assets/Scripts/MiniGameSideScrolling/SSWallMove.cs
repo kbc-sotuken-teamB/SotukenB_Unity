@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
+
 //wallMoveとか書いておきながら
 //動かすコード以外も書いているかもしれない致命的なコード。
 public class SSWallMove : MonoBehaviour
 {
     //public変数。
     public GameObject[] player;
-    public int PlayerNumber;
+
     //private変数。
     private GameObject RankingObj;
+
     private Ranking rank;
     private GameObject wall;
     private bool[] deathFlag = new bool[4];
@@ -32,24 +34,17 @@ public class SSWallMove : MonoBehaviour
     private void KillPlayer()
     {
         //各プレイヤーの座標と死んだときの座標
-        Vector3 deathPos = new Vector3(500.0f, -0.0f, 0.0f);
+        Vector3 deathPos = new Vector3(0.0f, 21000.0f, 0.0f);
         float zSize = 2.0f;
 
         for (int i = 0; i < 4; i++)
         {
-            if (player[i].transform.position.z < wall.transform.position.z + zSize  && deathFlag[i] == false)
+            if (player[i].transform.position.z < wall.transform.position.z + zSize && deathFlag[i] == false)
             {
                 player[i].GetComponent<CharacterController>().Move(deathPos);
-                deathFlag[i] = true;
 
-                if (deathFlag[0] == true && deathFlag[1] == true && deathFlag[2] == true && deathFlag[3] == true)
-                {
-                    return;
-                }
-                else
-                {
-                    rank.HerasuRemainingPlayer();
-                }
+                rank.PlayerIsWinOrDead();
+                deathFlag[i] = true;
             }
         }
     }

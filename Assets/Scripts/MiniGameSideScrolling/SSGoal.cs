@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 
 /// <summary>
 /// ゴールまたは全員死亡時にメインゲームに戻るよう書いています
@@ -11,13 +10,11 @@ public class SSGoal : MonoBehaviour
     private GameObject goal;
     private int playerMax = 4;
     private bool[] isWin = new bool[4];
-    
-    Ranking rank;
-    
+    private Ranking rank;
+
     // Start is called before the first frame update
     private void Start()
     {
-        
         //ゴールを探す。
         goal = GameObject.Find("Goal");
         rank = GetComponent<Ranking>();
@@ -27,6 +24,7 @@ public class SSGoal : MonoBehaviour
 
     private void Update()
     {
+
         IsGoal();
     }
 
@@ -37,20 +35,13 @@ public class SSGoal : MonoBehaviour
     {
         for (int i = 0; i < playerMax; i++)
         {
-           if(player[i].transform.position.z > goal.transform.position.z) {
+            if (player[i].transform.position.z > goal.transform.position.z && isWin[i] == false)
+            {
+                rank.PlayerIsWinOrDead();
+
                 isWin[i] = true;
-                rank.HerasuRemainingPlayer();
             }
         }
     }
 
-    public bool IsWinner(int num)
-    {
-        return isWin[num];
-    }
-
-    private void LoadNextScene()
-    {
-        SceneManager.LoadScene("MainGameScene");
-    }
 }
