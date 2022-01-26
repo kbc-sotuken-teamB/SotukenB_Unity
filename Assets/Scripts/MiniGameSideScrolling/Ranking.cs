@@ -30,7 +30,7 @@ public class Ranking : MonoBehaviour
         {
             for (int i = 0; i < 4; i++)
             {
-                if (goal.IsWinner(i) == true)
+                if (goal.isWin[i] == true)
                 {
                     mainGameData.SMainData.Points[i] += winScore; //ゴールしていたら得点を加算
                 }

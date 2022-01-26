@@ -7,9 +7,10 @@
 public class SSGoal : MonoBehaviour
 {
     public GameObject[] player;//プレイヤー
+    public bool[] isWin = new bool[4];
     private GameObject goal;
     private int playerMax = 4;
-    private bool[] isWin = new bool[4];
+    
     private Ranking rank;
 
     // Start is called before the first frame update
@@ -24,7 +25,6 @@ public class SSGoal : MonoBehaviour
 
     private void Update()
     {
-
         IsGoal();
     }
 
@@ -43,5 +43,4 @@ public class SSGoal : MonoBehaviour
             }
         }
     }
-
 }
