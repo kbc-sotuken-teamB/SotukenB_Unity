@@ -42,6 +42,13 @@ public class MainPlayer : MonoBehaviour
     bool _isGoal = false;
     public bool IsGoal { get { return _isGoal; } set { _isGoal = value; } }
 
+    //Sound再生
+    public AudioClip soundWolkPray;
+    AudioSource audioSource;
+
+    //アニメーション再生
+    private Animator animator;
+
     //所持アイテム
     //todo
 
@@ -64,12 +71,14 @@ public class MainPlayer : MonoBehaviour
     bool _isMove;
 
     //y位置　Startで取得　このカプセルモデルだと埋まるのでとりあえず　なくなるかも
-    float _yPos = 0.86f;
+    float _yPos = 0.0f;
     //みんなマスの中央だと重なるので四隅に寄ってもらう
     //けどデフォルトでそれだと見栄えが微妙だったので同じマスに重なったときだけズレてもらう処理にするか
     Vector3 _plOffset = Vector3.zero;
 
     bool _isFast = false;
+
+    int count = 0;
 
 
     //--定数
@@ -87,6 +96,12 @@ public class MainPlayer : MonoBehaviour
 
         //ポイントをテキストに反映
         ApplyPointText();
+
+        //audioComponentを取得
+        audioSource = GetComponent<AudioSource>();
+
+        //Animatorコンポーネントを取得
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -149,11 +164,12 @@ public class MainPlayer : MonoBehaviour
             return true;
         }
 
-
         //移動進行度加算
         float deltaTime = Time.deltaTime;
         //早送り
-        if (_isFast) deltaTime *= 2.0f;
+        if (_isFast){
+            deltaTime *= 2.0f;
+        }
         _moveTime = Mathf.Min(MOVE_DURATION, _moveTime + deltaTime);
 
         //y位置調整やオフセット
@@ -164,9 +180,19 @@ public class MainPlayer : MonoBehaviour
         //線形補間移動
         //プレイヤーtransform直動かしだけどメインゲームでは当たり判定とかも使わないだろうし大丈夫だと思う
         transform.position = Vector3.Lerp(_oldPos, targetPos, _moveTime / MOVE_DURATION);
+        if (_isMove == true)
+        {
+            //移動処理？アニメーション再生、効果音の再生
+            //足音を再生
+            if (count == 0) audioSource.PlayOneShot(soundWolkPray);
+            count = 1;
+            
+            animator.SetFloat("Speed", 0.2f);
+        }
+
 
         //移動終わったら
-        if(_moveTime == MOVE_DURATION)
+        if (_moveTime == MOVE_DURATION)
         {
             _moveTime = 0.0f;
             _oldPos = transform.position;
@@ -178,6 +204,11 @@ public class MainPlayer : MonoBehaviour
             {
                 //終わり
                 _isMove = false;
+
+                //アニメーション停止
+                animator.SetFloat("Speed", 0.0f);
+                count = 0;
+                audioSource.Stop();
                 //移動終わったtrueを返す
                 return true;
             }

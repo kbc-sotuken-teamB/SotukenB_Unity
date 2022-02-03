@@ -3,7 +3,9 @@ guid: 1bb6627a402b11f4fb2fdb6450710d86
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - TextPoint: {instanceID: 0}
+  - soundWolkPray: {fileID: 8300000, guid: d4c810d1a9b72fc4287f6af802a09704, type: 3}
   executionOrder: -20
   icon: {instanceID: 0}
   userData: 
