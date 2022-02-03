@@ -9,6 +9,7 @@ using UnityEngine;
 public class SSCameraMove : MonoBehaviour
 {
     public static Vector3 cameraPosition = new Vector3();//カメラの座標
+    public float speed = 0.7f;
     const float SPEED = 3.0f;
     // Start is called before the first frame update
     void Start()
@@ -19,6 +20,6 @@ public class SSCameraMove : MonoBehaviour
     void Update()
     {
         GameObject camera = GameObject.Find("Main Camera");
-       camera.transform.Translate(new Vector3(0.0f, 1 * SPEED * Time.deltaTime,0.0f));
+       camera.transform.Translate(new Vector3(0.0f, speed * SPEED * Time.deltaTime, 0.0f));
     }
 }
