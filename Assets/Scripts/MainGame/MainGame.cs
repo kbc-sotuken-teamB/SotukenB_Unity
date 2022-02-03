@@ -53,6 +53,14 @@ public class MainGame : MonoBehaviour
 
     public Text TextTurn;
 
+    //コインのオブジェクト
+    private GameObject coin;
+    //コインのインスタンス
+    private GameObject coininstance;
+    //コインの効果音
+    public AudioClip soundcoin;
+    AudioSource audioSource;
+
     //ステート
     //1P操作待機状態、2P…
     //サイコロが振られる、プレイヤーが出た目の数進むアニメーション中などのプレイヤー操作不可状態
@@ -153,6 +161,11 @@ public class MainGame : MonoBehaviour
         //プレイヤーのターン開始
         CheckNextPlayer();
         //StartCoroutine(PlayerTurn());
+
+        //コインオブジェクトの取得
+        coin = (GameObject)Resources.Load("coins");
+        //audioComponentを取得
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -537,9 +550,16 @@ public class MainGame : MonoBehaviour
                     AnnounceText.text = "コインマス！ " + _currentPlayer + "Pは10コインゲット！";
                     //コイン追加　とりあえず10
                     player.AddCoin(10);
+                    //playerの頭上に表示させたい
+                    coininstance = (GameObject)Instantiate(coin,new Vector3(5.0f, 0.0f, 0.0f),Quaternion.identity);
+                    //コインの効果音
+                    audioSource.PlayOneShot(soundcoin);
+                    if (!audioSource.isPlaying)
+                    {
+                        break;
+                    }
                     break;
-
-                    //ミニゲームマスなら
+                //ミニゲームマスなら
                 case "SquareMinigame":
                     AnnounceText.text = "ミニゲームマス！";
                     SaveParam();
@@ -550,6 +570,7 @@ public class MainGame : MonoBehaviour
 
             //次のプレイヤーへ
             CheckNextPlayer();
+            Destroy(coininstance);
             //_mainState = EnMainGameState.enNextPlayer;
         }
     }

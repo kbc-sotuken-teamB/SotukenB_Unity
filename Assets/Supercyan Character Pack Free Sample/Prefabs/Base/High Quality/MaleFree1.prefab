@@ -1301,6 +1301,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4889916270699016}
   - component: {fileID: 95612694983450844}
+  - component: {fileID: 6289694103025667601}
+  - component: {fileID: 6631883901785745942}
   m_Layer: 0
   m_Name: MaleFree1
   m_TagString: Untagged
@@ -1343,3 +1345,30 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!111 &6289694103025667601
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968476592218994}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 77d7842e2139f594bb31c3c63d1ad4b4, type: 3}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
+--- !u!114 &6631883901785745942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968476592218994}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81448e7d2cd1cb3439e60926cf7ae8e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

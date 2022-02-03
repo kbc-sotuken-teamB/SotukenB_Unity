@@ -3,7 +3,15 @@ guid: 567b980449cd7784bb982c0775f3c62d
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - AnnounceText: {instanceID: 0}
+  - PlayersParent: {instanceID: 0}
+  - Dice: {instanceID: 0}
+  - DiceArea: {instanceID: 0}
+  - SquaresParent: {instanceID: 0}
+  - TextA: {instanceID: 0}
+  - PanelBeginMiniGame: {instanceID: 0}
+  - TextTurn: {instanceID: 0}
   executionOrder: -50
   icon: {instanceID: 0}
   userData: 

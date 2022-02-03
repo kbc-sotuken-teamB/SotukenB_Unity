@@ -54,6 +54,9 @@ public class GeminPlayer : MonoBehaviour
     CharacterController _controller;
     //スコア更新用オブジェクト
     GameObject scoreObj;
+    //
+    private Animator anim;
+
 
     // Start is called before the first frame update
     void Start()
@@ -64,6 +67,8 @@ public class GeminPlayer : MonoBehaviour
         _plNumTextHorizontal = PlayerNum.ToString() + "PHorizontal";
         //スコア更新用オブジェクト
         scoreObj = GameObject.Find("ScoreManager");
+        //アニメーション
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -90,6 +95,15 @@ public class GeminPlayer : MonoBehaviour
         float moveX = Input.GetAxis(_plNumTextHorizontal) * SPEED * Time.deltaTime;
         //キャラコンでMove
         _controller.Move(new Vector3(moveX, 0.0f, 0.0f));
+        if (moveX > 0.1f || moveX < -0.1f)
+        {
+            anim.SetFloat("Speed", moveX);
+            transform.LookAt(transform.position + new Vector3(moveX, 0.0f, 0.0f));
+        }
+        else
+        {
+            anim.SetFloat("Speed", 0f);
+        }
     }
 
     //スタン時間の処理
