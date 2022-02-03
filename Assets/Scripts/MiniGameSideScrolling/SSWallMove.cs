@@ -9,7 +9,6 @@ public class SSWallMove : MonoBehaviour
 
     //private変数。
     private GameObject RankingObj;
-
     private Ranking rank;
     private GameObject wall;
     private bool[] deathFlag = new bool[4];
@@ -42,7 +41,6 @@ public class SSWallMove : MonoBehaviour
             if (player[i].transform.position.z < wall.transform.position.z + zSize && deathFlag[i] == false)
             {
                 player[i].GetComponent<CharacterController>().Move(deathPos);
-
                 rank.PlayerIsWinOrDead();
                 deathFlag[i] = true;
             }

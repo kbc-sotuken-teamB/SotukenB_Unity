@@ -5,11 +5,10 @@ public class SSObstacle : MonoBehaviour
 {
     //private bool isCreate = false;//障害物を作るかどうかのフラグ。いらないかもしれない。
     private int yokoNum = 5;      //障害物を横に並べる数
-
     private int yokoMax = 4;      //障害物横の最大数
     private int tateNum = 10;      //障害物縦の数
     private Vector3 startPosition = new Vector3(0.0f, 0.0f, 0.0f);
-    private const float moveZ = 7.0f;//縦にずらす距離。
+    private const float moveZ = 6.0f;//縦にずらす距離。
     private const float moveX = 3.0f;//1マスの横のサイズ。
     public GameObject obstract;
 
