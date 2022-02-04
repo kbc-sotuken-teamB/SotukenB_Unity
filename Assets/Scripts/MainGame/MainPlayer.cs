@@ -225,7 +225,14 @@ public class MainPlayer : MonoBehaviour
         _point += coin;
         ApplyPointText();
     }
-
+    public void MinusCoin(int coin)
+    {
+        if (_point > 0)
+        {
+            _point -= coin;
+        }
+        ApplyPointText();
+    }
     //テキスト更新
     void ApplyPointText()
     {
