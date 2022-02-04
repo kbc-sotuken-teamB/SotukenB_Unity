@@ -55,10 +55,22 @@ public class MainGame : MonoBehaviour
 
     //コインのオブジェクト
     private GameObject coin;
-    //コインのインスタンス
-    private GameObject coininstance;
-    //コインの効果音
-    public AudioClip soundcoin;
+    //宝箱のオブジェクト
+    private GameObject chest;
+    //インスタンス
+    private GameObject instance;
+    //コインアップの効果音
+    public AudioClip soundCoinUp;
+    //コインダウンの効果音
+    public AudioClip soundCoinDown;
+    //サイコロの効果音
+    public AudioClip soundDice;
+    //サイコロの決定
+    public AudioClip soundDic;
+    //クリック音
+    public AudioClip soundClick;
+    
+
     AudioSource audioSource;
 
     //ステート
@@ -164,6 +176,7 @@ public class MainGame : MonoBehaviour
 
         //コインオブジェクトの取得
         coin = (GameObject)Resources.Load("coins");
+        chest = (GameObject)Resources.Load("chest_open");
         //audioComponentを取得
         audioSource = GetComponent<AudioSource>();
     }
@@ -257,6 +270,8 @@ public class MainGame : MonoBehaviour
             //サイコロの重力をオンにして動かす
             Dice.GetComponent<Rigidbody>().useGravity = true;
             Dice.GetComponent<Rigidbody>().AddForce(new Vector3(0, 300, 0));
+            //サイコロの効果音
+            audioSource.PlayOneShot(soundDice);
         }
     }
 
@@ -321,6 +336,8 @@ public class MainGame : MonoBehaviour
         //止まったら もしくは10秒経ったら
         else if (Dice.GetComponent<Rigidbody>().velocity.magnitude < 0.0001f || _coolTime > 10f)
         {
+            //サイコロ決定
+            audioSource.PlayOneShot(soundDic);
             StartCoroutine(DiceEnd());
         }
     }
@@ -551,13 +568,25 @@ public class MainGame : MonoBehaviour
                     //コイン追加　とりあえず10
                     player.AddCoin(10);
                     //playerの頭上に表示させたい
-                    coininstance = (GameObject)Instantiate(coin,new Vector3(5.0f, 0.0f, 0.0f),Quaternion.identity);
+                    Vector3 addpos = player.transform.position;
+                    addpos.y = 5.0f;
+                    instance = (GameObject)Instantiate(coin, addpos, Quaternion.identity);
                     //コインの効果音
-                    audioSource.PlayOneShot(soundcoin);
-                    if (!audioSource.isPlaying)
-                    {
-                        break;
-                    }
+                    audioSource.PlayOneShot(soundCoinUp);
+                    
+                    break;
+                //コインマイナスマスなら
+                case "SquareMinuCoin":
+                    AnnounceText.text = "コインマイナスマス・・・ " + _currentPlayer + "Pは10コイン没収！！";
+                    //コイン追加　とりあえず10
+                    player.MinusCoin(5);
+                    //playerの頭上に表示させたい
+                    Vector3 minuspos = player.transform.position;
+                    minuspos.y = 5.0f;
+                    instance = (GameObject)Instantiate(coin, minuspos, Quaternion.identity);
+                    //コインの効果音
+                    audioSource.PlayOneShot(soundCoinDown);
+
                     break;
                 //ミニゲームマスなら
                 case "SquareMinigame":
@@ -570,7 +599,6 @@ public class MainGame : MonoBehaviour
 
             //次のプレイヤーへ
             CheckNextPlayer();
-            Destroy(coininstance);
             //_mainState = EnMainGameState.enNextPlayer;
         }
     }
@@ -585,6 +613,13 @@ public class MainGame : MonoBehaviour
         MainPlayer player = _players[_currentPlayer - 1].GetComponent<MainPlayer>();
         player.AddCoin(100);
 
+        //playerの頭上に表示させたい
+        Vector3 pos = player.transform.position;
+        pos.y = 5.0f;
+        instance = (GameObject)Instantiate(chest, pos, Quaternion.identity);
+        //コインの効果音
+        audioSource.PlayOneShot(soundCoinUp);
+
         //1秒待って
         yield return new WaitForSeconds(1.0f);
 
@@ -596,6 +631,7 @@ public class MainGame : MonoBehaviour
 
         //次のプレイヤーへ
         CheckNextPlayer();
+        Destroy(instance);
     }
 
     //次のプレイヤーをチェック (関数の最後で呼んでほしい)
@@ -681,6 +717,8 @@ public class MainGame : MonoBehaviour
     //一周後現れるミニゲームスタートボタンを押したらミニゲーム開始
     public void BeginMiniGameButtonOnClick()
     {
+        //クリック音の効果音
+        audioSource.PlayOneShot(soundClick);
         //ミニゲームシーンを呼び出す
         SceneManager.LoadScene(_miniGameScenes[_minigameInd]);
     }
