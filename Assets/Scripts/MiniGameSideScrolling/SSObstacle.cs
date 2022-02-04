@@ -17,7 +17,7 @@ public class SSObstacle : MonoBehaviour
         for (int i = 0; i < tateNum; i++)//縦
         {
             startPosition.z += moveZ;//初期座標のままだとプレイヤーと被るので少し前に持っていく
-            startPosition.x = -10.5f;//初期座標を先のコードでずらしてるから戻す。
+            //startPosition.x = -10.5f;//初期座標を先のコードでずらしてるから戻す。
             int createCount = 0;
             for (int j = 0; j < yokoNum; j++)//横
             {

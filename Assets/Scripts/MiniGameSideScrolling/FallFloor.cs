@@ -7,7 +7,6 @@
 
 public class FallFloor : MonoBehaviour
 {
-    private Vector3 mainus = new Vector3(-1.0f, -5.0f, -1.0f);
     public GameObject Camera;//カメラの座標を使うのでゲームカメラD&D
     public float downLange = 1.0f;
     // Start is called before the first frame update

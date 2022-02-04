@@ -7,7 +7,7 @@ public class FallMaker : MonoBehaviour
 {
     public int FloorNum = 20;
     public GameObject fallFloor;
-    private Vector3 startPosition = new Vector3(-5.0f,-0.5f,-3.0f);
+    private Vector3 startPosition = new Vector3(0.0f,-1.5f,-3.0f);
 
     // Start is called before the first frame update
     void Start()
@@ -17,7 +17,7 @@ public class FallMaker : MonoBehaviour
             GameObject fall = Instantiate(fallFloor);
             fall.name = "fallFloor"+i;
             fall = (GameObject)Instantiate(fall, startPosition, Quaternion.identity);//座標と回転を設定してインスタンスを生成
-            startPosition.z += 3.0f;
+            startPosition.z += 4.0f;
         }
     }
 
