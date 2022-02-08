@@ -6,41 +6,40 @@
 /// </summary>
 public class SSGoal : MonoBehaviour
 {
-    public GameObject[] player;//プレイヤー
-    public bool[] isWin = new bool[4];
-    private GameObject goal;
-    private int playerMax = 4;
-    
-    private Ranking rank;
+    //public GameObject[] player;//プレイヤー
+    //public bool[] isWin = new bool[4];
+    //private GameObject goal;
+    //private int playerMax = 4;
+    //private Ranking rank;
 
     // Start is called before the first frame update
     private void Start()
     {
-        //ゴールを探す。
-        goal = GameObject.Find("Goal");
-        rank = GetComponent<Ranking>();
+        ////ゴールを探す。
+        //goal = GameObject.Find("Goal");
+        //rank = GetComponent<Ranking>();
     }
 
     // Update is called once per frame
 
-    private void Update()
-    {
-        IsGoal();
-    }
+    //private void update()
+    //{
+    //    isgoal();
+    //}
 
-    //プレイヤーが死んだとき
-    private bool[] isGoalOrDead = new bool[4];
+    ////プレイヤーが死んだとき
+    //private bool[] isgoalordead = new bool[4];
 
-    private void IsGoal()
-    {
-        for (int i = 0; i < playerMax; i++)
-        {
-            if (player[i].transform.position.z > goal.transform.position.z && isWin[i] == false)
-            {
-                rank.PlayerIsWinOrDead();
+    //private void isgoal()
+    //{
+    //    for (int i = 0; i < playermax; i++)
+    //    {
+    //        if (player[i].transform.position.z > goal.transform.position.z && iswin[i] == false)
+    //        {
+    //            rank.playeriswinordead();
 
-                isWin[i] = true;
-            }
-        }
-    }
+    //            iswin[i] = true;
+    //        }
+    //    }
+    //}
 }
