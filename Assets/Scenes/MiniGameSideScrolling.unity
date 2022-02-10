@@ -269,11 +269,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: a4c5751fb41e4c840890b670a53fbcc4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.47
+      value: -1.1600001
       objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: a4c5751fb41e4c840890b670a53fbcc4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.1718075
+      value: 5.0418077
       objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: a4c5751fb41e4c840890b670a53fbcc4, type: 3}
       propertyPath: m_LocalRotation.x
@@ -426,6 +426,25 @@ MonoBehaviour:
   rankingObj: {fileID: 1202168855}
   number: 2
   Point: 10
+--- !u!114 &257722834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257722831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa7a4ec3a0ec5546837208747458385, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectObject: {fileID: 124582, guid: 7210ff34512b3a547bb82851f8d81172, type: 3}
+  deleteTime: 2
+  offset: 0
+  effectObject2: {fileID: 197712, guid: 1dbd11d2ca3f29640b6bd21d7b6393d2, type: 3}
+  deleteTime2: 2
+  offset2: 0
+  target: {fileID: 257722831}
 --- !u!143 &257722835
 CharacterController:
   m_ObjectHideFlags: 0
@@ -479,6 +498,25 @@ MonoBehaviour:
   rankingObj: {fileID: 1202168855}
   number: 3
   Point: 10
+--- !u!114 &259288500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 259288497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa7a4ec3a0ec5546837208747458385, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectObject: {fileID: 124582, guid: 7210ff34512b3a547bb82851f8d81172, type: 3}
+  deleteTime: 2
+  offset: 0
+  effectObject2: {fileID: 197712, guid: 1dbd11d2ca3f29640b6bd21d7b6393d2, type: 3}
+  deleteTime2: 2
+  offset2: 0
+  target: {fileID: 259288497}
 --- !u!143 &259288501
 CharacterController:
   m_ObjectHideFlags: 0
@@ -665,7 +703,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 339991849}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -22.9, y: -0.5, z: -2.19}
+  m_LocalPosition: {x: -15.3, y: -0.5, z: 12.66}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_Children: []
   m_Father: {fileID: 0}
@@ -692,11 +730,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: 06c7a65a584b61843b3fc157f395f342, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.47
+      value: -1.1600001
       objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: 06c7a65a584b61843b3fc157f395f342, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.2284977
+      value: 5.098498
       objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: 06c7a65a584b61843b3fc157f395f342, type: 3}
       propertyPath: m_LocalRotation.x
@@ -853,6 +891,25 @@ MonoBehaviour:
   rankingObj: {fileID: 1202168855}
   number: 1
   Point: 10
+--- !u!114 &676890695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 676890692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa7a4ec3a0ec5546837208747458385, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectObject: {fileID: 124582, guid: 7210ff34512b3a547bb82851f8d81172, type: 3}
+  deleteTime: 2
+  offset: 0
+  effectObject2: {fileID: 108504, guid: d18380a6098943a4a879b5a0f3826c9d, type: 3}
+  deleteTime2: 2
+  offset2: 0
+  target: {fileID: 676890692}
 --- !u!143 &676890696
 CharacterController:
   m_ObjectHideFlags: 0
@@ -961,11 +1018,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: 3c41bfdd77d7af34dab1de57f67d5c28, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.47
+      value: -1.1600001
       objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: 3c41bfdd77d7af34dab1de57f67d5c28, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.2711937
+      value: 5.141194
       objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: 3c41bfdd77d7af34dab1de57f67d5c28, type: 3}
       propertyPath: m_LocalRotation.x
@@ -1053,7 +1110,7 @@ PrefabInstance:
     - target: {fileID: 8890356699427785745, guid: d5b8de414112a004a82d0437b5f7a780,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.236596
+      value: -1.57
       objectReference: {fileID: 0}
     - target: {fileID: 8890356699427785745, guid: d5b8de414112a004a82d0437b5f7a780,
         type: 3}
@@ -1213,11 +1270,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: ff127a7300e38d34fb844f9c2d394782, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.47
+      value: -1.16
       objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: ff127a7300e38d34fb844f9c2d394782, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.11
+      value: 4.98
       objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: ff127a7300e38d34fb844f9c2d394782, type: 3}
       propertyPath: m_LocalRotation.x
@@ -1491,6 +1548,25 @@ MonoBehaviour:
   rankingObj: {fileID: 1202168855}
   number: 0
   Point: 10
+--- !u!114 &1393998109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393998106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa7a4ec3a0ec5546837208747458385, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectObject: {fileID: 124582, guid: 7210ff34512b3a547bb82851f8d81172, type: 3}
+  deleteTime: 2
+  offset: 0
+  effectObject2: {fileID: 108504, guid: d18380a6098943a4a879b5a0f3826c9d, type: 3}
+  deleteTime2: 2
+  offset2: 0
+  target: {fileID: 1393998106}
 --- !u!143 &1393998110
 CharacterController:
   m_ObjectHideFlags: 0

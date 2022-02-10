@@ -27,6 +27,10 @@ public class efekuto : MonoBehaviour
 	public GameObject target;
 	//1度だけ再生するときに使うフラグ。
 	private bool IsPlay = false;
+	//エフェクトの大きさ
+	Vector3 efSize = Vector3.one;
+	Vector3 efSize2 = Vector3.one;
+	Vector3 efSizeTransScale = new Vector3(0.01f, 0.01f, 0.01f);
 	// Use this for initialization
 	void Start()
 	{
@@ -36,10 +40,13 @@ public class efekuto : MonoBehaviour
 	}
 	void Update()
     {
-		if(target.transform.position.y < -3)
+		if(target.transform.position.y < -3 && IsPlay == false)
         {
 			var instantiateEffect = GameObject.Instantiate(effectObject2, transform.position + new Vector3(0f, offset2, 0f), Quaternion.identity) as GameObject;
 			Destroy(instantiateEffect, deleteTime2);
+			IsPlay = true;
         }
+		efSize -= efSizeTransScale;
+		effectObject.transform.localScale = efSize;
     }
 }
