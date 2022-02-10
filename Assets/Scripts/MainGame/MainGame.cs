@@ -53,12 +53,12 @@ public class MainGame : MonoBehaviour
 
     public Text TextTurn;
 
-    //コインのオブジェクト
+    /*//コインのオブジェクト
     private GameObject coin;
     //宝箱のオブジェクト
     private GameObject chest;
     //インスタンス
-    private GameObject instance;
+    private GameObject instance;*/
     //コインアップの効果音
     public AudioClip soundCoinUp;
     //コインダウンの効果音
@@ -70,8 +70,10 @@ public class MainGame : MonoBehaviour
     //クリック音
     public AudioClip soundClick;
     
-
     AudioSource audioSource;
+
+    //テキスト背景バーのオブジェクト
+    public GameObject image;
 
     //ステート
     //1P操作待機状態、2P…
@@ -174,11 +176,13 @@ public class MainGame : MonoBehaviour
         CheckNextPlayer();
         //StartCoroutine(PlayerTurn());
 
-        //コインオブジェクトの取得
+        /*//コインオブジェクトの取得
         coin = (GameObject)Resources.Load("coins");
-        chest = (GameObject)Resources.Load("chest_open");
+        chest = (GameObject)Resources.Load("chest_open");*/
         //audioComponentを取得
         audioSource = GetComponent<AudioSource>();
+        //テキストバーを取得
+        image = GameObject.Find("TextBar");
     }
 
     // Update is called once per frame
@@ -217,6 +221,7 @@ public class MainGame : MonoBehaviour
             default:
                 break;
         }
+        
     }
 
     //保持していたデータロード
@@ -336,8 +341,9 @@ public class MainGame : MonoBehaviour
         //止まったら もしくは10秒経ったら
         else if (Dice.GetComponent<Rigidbody>().velocity.magnitude < 0.0001f || _coolTime > 10f)
         {
-            //サイコロ決定
+            //サイコロの効果音を再生
             audioSource.PlayOneShot(soundDic);
+            //サイコロ決定
             StartCoroutine(DiceEnd());
         }
     }
@@ -383,7 +389,8 @@ public class MainGame : MonoBehaviour
             //メッセージ
             AnnounceText.text = _currentPlayer + "Pは" + _diceNum + "マス進みます";
             Debug.Log(_currentPlayer + "P: " + _diceNum);
-
+            //ImageというコンポーネントのfillAmountを取得して操作する
+            image.GetComponent<Image>().fillAmount = 0.3f;
             //プレイヤー取得
             MainPlayer player = _players[_currentPlayer - 1].GetComponent<MainPlayer>();
             //プレイヤーの現在マス取得
@@ -530,6 +537,8 @@ public class MainGame : MonoBehaviour
         //◯Pのターン！
         Debug.Log("Next:" + _currentPlayer + "P");
         AnnounceText.text = _currentPlayer + "Pのターン！";
+        //ImageというコンポーネントのfillAmountを取得して操作する
+        image.GetComponent<Image>().fillAmount = 0.2f;
         //Aボタン入力を促すただの「A」だけのテキスト表示　クソ雑　本来ボタンアイコンとかにするべき
         TextA.SetActive(true);
 
@@ -565,12 +574,10 @@ public class MainGame : MonoBehaviour
                 //コインマスなら
                 case "SquareAddCoin":
                     AnnounceText.text = "コインマス！ " + _currentPlayer + "Pは10コインゲット！";
+                    //ImageというコンポーネントのfillAmountを取得して操作する
+                    image.GetComponent<Image>().fillAmount = 0.52f;
                     //コイン追加　とりあえず10
                     player.AddCoin(10);
-                    //playerの頭上に表示させたい
-                    Vector3 addpos = player.transform.position;
-                    addpos.y = 5.0f;
-                    instance = (GameObject)Instantiate(coin, addpos, Quaternion.identity);
                     //コインの効果音
                     audioSource.PlayOneShot(soundCoinUp);
                     
@@ -578,12 +585,10 @@ public class MainGame : MonoBehaviour
                 //コインマイナスマスなら
                 case "SquareMinuCoin":
                     AnnounceText.text = "コインマイナスマス・・・ " + _currentPlayer + "Pは10コイン没収！！";
+                    //ImageというコンポーネントのfillAmountを取得して操作する
+                    image.GetComponent<Image>().fillAmount = 0.7f;
                     //コイン追加　とりあえず10
                     player.MinusCoin(5);
-                    //playerの頭上に表示させたい
-                    Vector3 minuspos = player.transform.position;
-                    minuspos.y = 5.0f;
-                    instance = (GameObject)Instantiate(coin, minuspos, Quaternion.identity);
                     //コインの効果音
                     audioSource.PlayOneShot(soundCoinDown);
 
@@ -596,9 +601,9 @@ public class MainGame : MonoBehaviour
                     InitMinigame();
                     return;
             }
-
-            //次のプレイヤーへ
-            CheckNextPlayer();
+             //次のプレイヤーへ
+             CheckNextPlayer();
+            
             //_mainState = EnMainGameState.enNextPlayer;
         }
     }
@@ -613,12 +618,8 @@ public class MainGame : MonoBehaviour
         MainPlayer player = _players[_currentPlayer - 1].GetComponent<MainPlayer>();
         player.AddCoin(100);
 
-        //playerの頭上に表示させたい
-        Vector3 pos = player.transform.position;
-        pos.y = 5.0f;
-        instance = (GameObject)Instantiate(chest, pos, Quaternion.identity);
         //コインの効果音
-        audioSource.PlayOneShot(soundCoinUp);
+        audioSource.PlayOneShot(soundCoinUp);   
 
         //1秒待って
         yield return new WaitForSeconds(1.0f);
@@ -628,10 +629,6 @@ public class MainGame : MonoBehaviour
         player.transform.position = _squares[0].position;
         player.ApplyOffset();
         player.CurrentSquare = 0;
-
-        //次のプレイヤーへ
-        CheckNextPlayer();
-        Destroy(instance);
     }
 
     //次のプレイヤーをチェック (関数の最後で呼んでほしい)
