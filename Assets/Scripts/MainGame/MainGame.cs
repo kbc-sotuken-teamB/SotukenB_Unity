@@ -663,8 +663,10 @@ public class MainGame : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
 
         AnnounceText.text = "ターン終了！ミニゲームを開始します！";
+        //ImageというコンポーネントのfillAmountを取得して操作する
+        image.GetComponent<Image>().fillAmount = 0.6f;
         //ミニゲームを準備する
-        InitMinigame();
+        //InitMinigame();
     }
 
     void InitMinigame()

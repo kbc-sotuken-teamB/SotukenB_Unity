@@ -48,7 +48,7 @@ public class MainPlayer : MonoBehaviour
 
     //アニメーション再生
     private Animator animator;
-
+    
     //所持アイテム
     //todo
 
@@ -179,7 +179,21 @@ public class MainPlayer : MonoBehaviour
 
         //線形補間移動
         //プレイヤーtransform直動かしだけどメインゲームでは当たり判定とかも使わないだろうし大丈夫だと思う
-        transform.position = Vector3.Lerp(_oldPos, targetPos, _moveTime / MOVE_DURATION);
+        //プレイヤーから次の座標までのベクトル
+        Vector3 moveSpeed = targetPos - transform.position;
+        moveSpeed.Normalize();
+        transform.position += moveSpeed * 0.07f;
+        //transform.position = Vector3.Lerp(_oldPos, targetPos, _moveTime / MOVE_DURATION);
+        Vector3 diff = transform.position - _oldPos;   //前回からどこに進んだかをベクトルで取得
+        _oldPos = transform.position;  //前回のPositionの更新
+
+        //ベクトルの大きさが0.01以上の時に向きを変える処理をする
+        if (diff.magnitude > 0.01f)
+        {
+            transform.rotation = Quaternion.LookRotation(diff); //向きを変更する
+        }
+
+        float dist = Vector3.Distance(targetPos, transform.position);
         if (_isMove == true)
         {
             //移動処理？アニメーション再生、効果音の再生
@@ -192,7 +206,8 @@ public class MainPlayer : MonoBehaviour
 
 
         //移動終わったら
-        if (_moveTime == MOVE_DURATION)
+        //if (_moveTime == MOVE_DURATION)
+        if (dist < 0.1f)
         {
             _moveTime = 0.0f;
             _oldPos = transform.position;
@@ -209,6 +224,8 @@ public class MainPlayer : MonoBehaviour
                 animator.SetFloat("Speed", 0.0f);
                 count = 0;
                 audioSource.Stop();
+                diff = new Vector3(0, 0, -1);
+                transform.rotation = Quaternion.LookRotation(diff); //向きを変更する
                 //移動終わったtrueを返す
                 return true;
             }
@@ -221,9 +238,17 @@ public class MainPlayer : MonoBehaviour
 
 
     public void AddCoin(int coin)
-    {
+    {     // 再生中か？
+        animator.SetTrigger("Get");
+        /*AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0); // layerNo:Base Layer == 0
+        while (stateInfo.normalizedTime < 1.0f)
+        {
+            stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        }*/
+        
         _point += coin;
         ApplyPointText();
+        
     }
     public void MinusCoin(int coin)
     {
