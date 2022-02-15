@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-//障害物のクラス。めっちゃFind使ってます。重い死ねってなったら解決法教えて下し亜。
+//障害物を生成するクラス
 public class SSObstacle : MonoBehaviour
 {
     Vector3 startPosition = new Vector3(-6.0f, 0.0f, 10.0f);

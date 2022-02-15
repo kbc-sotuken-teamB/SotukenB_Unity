@@ -40,9 +40,10 @@ public class ScrollPlayer : MonoBehaviour
             && isGoal == false
             && isRakka == false)
         {
+            ranking.PlayerIsEnd(number);
+            mainGameData.SMainData.Points[number] += Point;
             isGoal = true;
             isEnd = true;
-            mainGameData.SMainData.Points[number] += Point;
         }
     }
 
@@ -51,15 +52,11 @@ public class ScrollPlayer : MonoBehaviour
         if (gameObject.transform.position.y < deathHight
             && isRakka == false)
         {
+            ranking.PlayerIsEnd(number);
             isRakka = true;
             isEnd = true;
             //mainGameData.SMainData.Points[number] += Point / 2;
         }
-    }
-
-    public bool GetIsEnd()//シーン切り替えクラスが使うやつ。
-    {
-        return isEnd;
     }
     void EndPlayerMove()
     {

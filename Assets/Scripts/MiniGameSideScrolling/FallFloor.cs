@@ -8,9 +8,11 @@
 public class FallFloor : MonoBehaviour
 {
     public GameObject Camera;//カメラの座標を使うのでゲームカメラD&D
-    public float downLange = 1.0f;
-    bool downMove = false;
-    bool upMove = false;
+    public float downLange = 3.0f;
+    private float downSpeed = 10.0f;
+    private bool downMove = false;
+    private bool upMove = false;
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -19,22 +21,27 @@ public class FallFloor : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        //カメラの位置より落下板が後ろなら
         if (gameObject.transform.position.z < Camera.transform.position.z - downLange)
         {
-            if (1.0f < gameObject.transform.position.y)
+            //一定値まで板が上がったら落とす
+            if (downMove == true)
             {
-                gameObject.transform.Translate(Vector3.down * 5 * Time.deltaTime);
+                gameObject.transform.Translate(Vector3.down * downSpeed * Time.deltaTime);
                 gameObject.transform.Rotate(0.0f, 0.0f, 30.0f * Time.deltaTime);
             }
             else
             {
-                gameObject.transform.Translate(0.0f, 0.1f, 0.0f);
+                if (downMove == false)
+                {
+                    gameObject.transform.Translate(0.0f, 0.1f, 0.0f);
+                }
+
+                if (1.0f < gameObject.transform.position.y)
+                {
+                    downMove = true;
+                }
             }
         }
-    }
-    void Move()
-    {
-        
-       
     }
 }

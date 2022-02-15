@@ -5,7 +5,7 @@ using UnityEngine;
 //落ちる床量産クラス
 public class FallMaker : MonoBehaviour
 {
-    public int FloorNum = 13;
+    private int FloorNum = 14;
     public GameObject fallFloor;
     private Vector3 startPosition = new Vector3(0.0f,-1.5f,-3.0f);
 

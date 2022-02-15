@@ -7,7 +7,8 @@ public class Ranking : MonoBehaviour
     public GameObject[] playerObj = new GameObject[4];
     ScrollPlayer[] scrollPlayer = new ScrollPlayer[4];
     int count = 0;
-    bool[] EndPlayer = new bool[4];
+   
+    bool[] isPlayerEnd = new bool[4];
     // Start is called before the first frame update
     private void Start()
     {
@@ -20,7 +21,7 @@ public class Ranking : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        EndPlayerCount();
+        NextScene();
     }
 
     public void NextScene()
@@ -30,15 +31,13 @@ public class Ranking : MonoBehaviour
             SceneManager.LoadScene("MainGameScene");//メインゲームに戻るぜ。
         }
     }
-    void EndPlayerCount()
-    {
-        for(int i = 0; i < 4; i++)
+    bool[] flag = new bool[4];
+    public void PlayerIsEnd(int myNum) { 
+        isPlayerEnd[myNum] = true;
+        if(flag[myNum] == false)
         {
-            if(EndPlayer[i] == false)
-            {
-                EndPlayer[i] = scrollPlayer[i].GetIsEnd();
-                count++;
-            }
+            count++;
+            flag[myNum] = true;
         }
     }
 }
