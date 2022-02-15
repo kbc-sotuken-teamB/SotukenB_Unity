@@ -50,6 +50,7 @@ public class MainGame : MonoBehaviour
 
     //「ミニゲーム◯◯を開始します」ってUIのパネル
     public GameObject PanelBeginMiniGame;
+    public GameObject PanelGameEnd;
 
     public Text TextTurn;
 
@@ -669,7 +670,20 @@ public class MainGame : MonoBehaviour
         //image.GetComponent<Image>().fillAmount = 0.6f;
         //ミニゲームを準備する
         //InitMinigame();
-        StartCoroutine(NextPlayerCoroutine());
+
+        //ターン20で終わり
+        if(_currentTurn >= 20)
+        {
+            PanelGameEnd.SetActive(true);
+            //1秒待って
+            yield return new WaitForSeconds(1.0f);
+            //スコアシーンへ
+            SceneManager.LoadScene("ScoreScene");
+        }
+        else
+        {
+            StartCoroutine(NextPlayerCoroutine());
+        }
     }
 
     void InitMinigame()

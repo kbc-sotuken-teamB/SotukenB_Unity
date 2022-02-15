@@ -29,6 +29,7 @@ public class Score : MonoBehaviour
                 _points[i] = mainGameData.Points[i];
             }
 
+            Destroy(MainGameData.Instance);
         }
         //デバッグ用
         else
