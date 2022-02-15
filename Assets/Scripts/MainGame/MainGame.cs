@@ -50,6 +50,7 @@ public class MainGame : MonoBehaviour
 
     //「ミニゲーム◯◯を開始します」ってUIのパネル
     public GameObject PanelBeginMiniGame;
+    public GameObject PanelGameEnd;
 
     public Text TextTurn;
 
@@ -629,6 +630,8 @@ public class MainGame : MonoBehaviour
         player.transform.position = _squares[0].position;
         player.ApplyOffset();
         player.CurrentSquare = 0;
+
+        CheckNextPlayer();
     }
 
     //次のプレイヤーをチェック (関数の最後で呼んでほしい)
@@ -655,18 +658,32 @@ public class MainGame : MonoBehaviour
         //ターン増加
         _currentTurn++;
         //カレントプレイヤーを0に戻して
-        _currentPlayer = 0;
+        _currentPlayer = 1;
         //データセーブ
         SaveParam();
 
         //1秒待って
         yield return new WaitForSeconds(1.0f);
 
-        AnnounceText.text = "ターン終了！ミニゲームを開始します！";
+        //AnnounceText.text = "ターン終了！ミニゲームを開始します！";
         //ImageというコンポーネントのfillAmountを取得して操作する
-        image.GetComponent<Image>().fillAmount = 0.6f;
+        //image.GetComponent<Image>().fillAmount = 0.6f;
         //ミニゲームを準備する
         //InitMinigame();
+
+        //ターン20で終わり
+        if(_currentTurn >= 20)
+        {
+            PanelGameEnd.SetActive(true);
+            //1秒待って
+            yield return new WaitForSeconds(1.0f);
+            //スコアシーンへ
+            SceneManager.LoadScene("ScoreScene");
+        }
+        else
+        {
+            StartCoroutine(NextPlayerCoroutine());
+        }
     }
 
     void InitMinigame()

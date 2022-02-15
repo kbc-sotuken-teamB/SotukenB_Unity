@@ -175,7 +175,7 @@ public class MainPlayer : MonoBehaviour
         //y位置調整やオフセット
         Vector3 targetPos = _targetPosList[_targetPosListInd];
         targetPos.y = _yPos;
-        //targetPos += _plOffset;
+        targetPos += _plOffset;
 
         //線形補間移動
         //プレイヤーtransform直動かしだけどメインゲームでは当たり判定とかも使わないだろうし大丈夫だと思う
