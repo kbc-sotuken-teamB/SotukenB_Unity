@@ -629,6 +629,8 @@ public class MainGame : MonoBehaviour
         player.transform.position = _squares[0].position;
         player.ApplyOffset();
         player.CurrentSquare = 0;
+
+        CheckNextPlayer();
     }
 
     //次のプレイヤーをチェック (関数の最後で呼んでほしい)
@@ -655,18 +657,19 @@ public class MainGame : MonoBehaviour
         //ターン増加
         _currentTurn++;
         //カレントプレイヤーを0に戻して
-        _currentPlayer = 0;
+        _currentPlayer = 1;
         //データセーブ
         SaveParam();
 
         //1秒待って
         yield return new WaitForSeconds(1.0f);
 
-        AnnounceText.text = "ターン終了！ミニゲームを開始します！";
+        //AnnounceText.text = "ターン終了！ミニゲームを開始します！";
         //ImageというコンポーネントのfillAmountを取得して操作する
-        image.GetComponent<Image>().fillAmount = 0.6f;
+        //image.GetComponent<Image>().fillAmount = 0.6f;
         //ミニゲームを準備する
         //InitMinigame();
+        StartCoroutine(NextPlayerCoroutine());
     }
 
     void InitMinigame()
