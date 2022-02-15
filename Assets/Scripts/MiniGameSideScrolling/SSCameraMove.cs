@@ -9,8 +9,13 @@ using UnityEngine;
 public class SSCameraMove : MonoBehaviour
 {
     public static Vector3 cameraPosition = new Vector3();//カメラの座標
-    public float speed = 0.7f;
-    const float SPEED = 3.0f;
+    [SerializeField]
+    GameObject mainCamera;
+    [SerializeField]
+    Vector3 moveSpeed = new Vector3(0.0f, 0.0f, 1.0f);
+
+    [SerializeField]
+    float speed = 1.0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,7 +24,7 @@ public class SSCameraMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GameObject camera = GameObject.Find("Main Camera");
-       camera.transform.Translate(new Vector3(0.0f, speed * SPEED * Time.deltaTime, 0.0f));
+        //this.transform.position += new Vector3(dx * Time.deltaTime, 0, 0);
+        mainCamera.transform.position += new Vector3(0.0f, 0.0f, speed*Time.deltaTime);
     }
 }

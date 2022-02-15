@@ -8,7 +8,7 @@
 public class FallFloor : MonoBehaviour
 {
     public GameObject Camera;//カメラの座標を使うのでゲームカメラD&D
-    public float downLange = 3.0f;
+    private float downLange = -6.0f;
     private float downSpeed = 10.0f;
     private bool downMove = false;
     private bool upMove = false;

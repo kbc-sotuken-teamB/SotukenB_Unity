@@ -41,7 +41,7 @@ public class ScrollPlayer : MonoBehaviour
             && isRakka == false)
         {
             ranking.PlayerIsEnd(number);
-            mainGameData.SMainData.Points[number] += Point;
+            //mainGameData.SMainData.Points[number] += Point;
             isGoal = true;
             isEnd = true;
         }
