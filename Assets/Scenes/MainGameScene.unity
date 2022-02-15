@@ -1141,6 +1141,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 1968476592218994, guid: d3906fc87bbf8b04b9495dd7566ace24, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: d3906fc87bbf8b04b9495dd7566ace24, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.5
@@ -1764,6 +1768,10 @@ PrefabInstance:
     - target: {fileID: 1968476592218994, guid: a3d8d8acc12731144991288d702bde5c, type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1968476592218994, guid: a3d8d8acc12731144991288d702bde5c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: a3d8d8acc12731144991288d702bde5c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2621,6 +2629,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 1968476592218994, guid: 313ad0ef31f75b84f9f31c0528802fdd, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: 313ad0ef31f75b84f9f31c0528802fdd, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1
@@ -2866,7 +2878,7 @@ PrefabInstance:
     - target: {fileID: 4760353112734165102, guid: 227a9f15dfd54574da7355f7b980eb02,
         type: 3}
       propertyPath: m_TagString
-      value: SquareMinigame
+      value: SquareAddCoin
       objectReference: {fileID: 0}
     - target: {fileID: 5358501309395551100, guid: 227a9f15dfd54574da7355f7b980eb02,
         type: 3}
@@ -3446,7 +3458,7 @@ PrefabInstance:
     - target: {fileID: 4760353112734165102, guid: 227a9f15dfd54574da7355f7b980eb02,
         type: 3}
       propertyPath: m_TagString
-      value: SquareMinigame
+      value: SquareAddCoin
       objectReference: {fileID: 0}
     - target: {fileID: 5358501309395551100, guid: 227a9f15dfd54574da7355f7b980eb02,
         type: 3}
@@ -4926,7 +4938,7 @@ PrefabInstance:
     - target: {fileID: 4760353112734165102, guid: 227a9f15dfd54574da7355f7b980eb02,
         type: 3}
       propertyPath: m_TagString
-      value: SquareMinigame
+      value: SquareAddCoin
       objectReference: {fileID: 0}
     - target: {fileID: 5358501309395551100, guid: 227a9f15dfd54574da7355f7b980eb02,
         type: 3}
@@ -5004,6 +5016,10 @@ PrefabInstance:
     - target: {fileID: 1968476592218994, guid: 4f01405e567118648bfe4dddc2bfcd2b, type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1968476592218994, guid: 4f01405e567118648bfe4dddc2bfcd2b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4889916270699016, guid: 4f01405e567118648bfe4dddc2bfcd2b, type: 3}
       propertyPath: m_LocalPosition.x
