@@ -1,45 +1,43 @@
 ﻿using UnityEngine;
-
-//障害物のクラス。めっちゃFind使ってます。重い死ねってなったら解決法教えて下し亜。
+using System;
+//障害物を生成するクラス
 public class SSObstacle : MonoBehaviour
 {
-    //private bool isCreate = false;//障害物を作るかどうかのフラグ。いらないかもしれない。
-    private int yokoNum = 5;      //障害物を横に並べる数
-
-    private int yokoMax = 4;      //障害物横の最大数
-    private int tateNum = 10;      //障害物縦の数
-    private Vector3 startPosition = new Vector3(0.0f, 0.0f, 0.0f);
-    private const float moveZ = 7.0f;//縦にずらす距離。
-    private const float moveX = 3.0f;//1マスの横のサイズ。
-    public GameObject obstract;
-
+    Vector3 startPosition = new Vector3(-6.0f, 0.0f, 10.0f);
+    [SerializeField]float addX;
+    [SerializeField]float addZ;
+    public GameObject obstract; //邪魔ブロック
+    System.Random rand = new System.Random();         //ランダム変数
+    [SerializeField] int tateMax;//縦最大数
+    [SerializeField] int yokoMax;// 横最大数
     private bool Start()
     {
-        for (int i = 0; i < tateNum; i++)//縦
+        //座標と回転を設定してインスタンスを生成
+        for(int j = 0;j < tateMax; j++)//楯列は13
         {
-            startPosition.z += moveZ;//初期座標のままだとプレイヤーと被るので少し前に持っていく
-            startPosition.x = -10.5f;//初期座標を先のコードでずらしてるから戻す。
-            int createCount = 0;
-            for (int j = 0; j < yokoNum; j++)//横
+            int randInt = rand.Next(0, yokoMax);
+            int count = 0;
+            for (int i = 0; i < yokoMax; i++)//横列は4
             {
-                if (createCount < yokoMax && BoolRandom() == true)
+                if (count != randInt)
                 {
-                    obstract = (GameObject)Instantiate(obstract, startPosition, Quaternion.identity);//座標と回転を設定してインスタンスを生成
-                    createCount++;
+                    obstract = (GameObject)Instantiate(obstract, startPosition, Quaternion.identity);
                 }
-                startPosition.x += moveX;//1マス分横にずらす
+                count++;
+                startPosition.x += addX;
             }
+            startPosition.x = -6.0f;
+            startPosition.z += addZ;
         }
+        
+        
+       
         return true;
     }
 
     private void Update()
     {
-        int a = 0;
-        if (a == 0)
-        {
-            //(bool random) => { auto p = bool(Random.Range(0, 2)); };
-        }
+        
     }
 
     /// <summary>
@@ -48,6 +46,6 @@ public class SSObstacle : MonoBehaviour
     /// <returns>bool型の乱数</returns>
     private bool BoolRandom()
     {
-        return Random.Range(0, 2) == 0;
+        return UnityEngine.Random.Range(0, 2) == 0;
     }
 }

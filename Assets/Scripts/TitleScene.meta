@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Particle Ribbon by Moonflower Carnivore.meta
+guid: 8837ef3c7cd67b1468464ada5daad270
+=======
 guid: dae8f7650948f584b9768bf93efef1ba
+>>>>>>> 396847fc8683c644f7d3d14613ce5b689ccbb10b:Assets/Scripts/TitleScene.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

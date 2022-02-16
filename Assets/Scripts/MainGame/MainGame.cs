@@ -458,7 +458,7 @@ public class MainGame : MonoBehaviour
         //サイコロの回転をリセット
         //Dice.transform.rotation = Quaternion.identity;
 
-        Dice.GetComponent<Dice>().InitMove(Camera.main.transform.position - _dicePosOffset, diceAngle);
+        Dice.GetComponent<Dice>().InitMove(Vector3.one - _dicePosOffset, diceAngle);
 
         //出た目の位置へ回転
         //Dice.transform.eulerAngles = _diceAngle;

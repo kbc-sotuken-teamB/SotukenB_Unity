@@ -1,45 +1,94 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.UI;
+using System.Diagnostics;
 //死んだ数+ゴールした数がプレイヤー人数を超えたらシーンを切り替えるスクリプト。
 public class Ranking : MonoBehaviour
 {
-    public int winScore = 10;            //スコア。恐らく結構調整するのでパブリック変数にしてあります。
-    public int loseScore = 3;          　//負けても何故か得点が追加されます。０点だと悲しくない？
-    private int remainigPlayer = 4;      //残り人数
-    private MainGameData mainGameData;   //メインゲームデータ。ゲーム終了時に得点を加算するときに使う。
-    private SSGoal goal;                 //ゴールクラス。ゴールしたヤツの判定。
+    [SerializeField]  GameObject[] scrollPlayer;
+    ScrollPlayer[] scrollPlayers = new ScrollPlayer[4];
+    [SerializeField] Image image;
+    [SerializeField] Vector3 leftMax = new Vector3(0.0f,0.0f,0.0f);
+    [SerializeField] Vector3 startPos = new Vector3(600.0f, 255.0f, 0.0f);
+    [SerializeField] Vector3 moveSpeed = new Vector3(-5.0f, 0.0f, 0.0f);
+    [SerializeField] float delay = 0;
+    MainGameData.SMainGameData mainGameData;// = MainGameData.Instance.SMainData;
+    bool imageMoveEnd = false;
+    bool[] isPlayerEnd = new bool[4];
+    int count = 0;
+    int winScore = 10;
+    int loseScore = 3;
 
+    MainGameData mainGame;
     // Start is called before the first frame update
     private void Start()
     {
-        goal = GetComponent<SSGoal>();
-        mainGameData = new MainGameData();
+        for(int i = 0; i < 4; i++)
+        {
+            scrollPlayers[i] = scrollPlayer[i].GetComponent<ScrollPlayer>();
+        }
+        mainGameData = MainGameData.Instance.SMainData;//メインゲームデータの初期化
+
+        
     }
 
     // Update is called once per frame
     private void Update()
     {
-        Debug.Log(remainigPlayer);
+        if (count >= 4)
+        {
+            MoveImage();
+        }
+        if (imageMoveEnd)
+        {
+            delay -= Time.deltaTime;//動き終わった後のディレイ
+            if (delay < 0)
+            {
+                AddPoint();
+                SceneManager.LoadScene("MainGameScene");//メインゲームに戻るぜ。
+            }
+        }
     }
 
-    public void PlayerIsWinOrDead()
+    private bool[] flag = new bool[4];
+
+    public void PlayerIsEnd(int myNum)
     {
-        remainigPlayer--;//残りプレイヤー数を減らす
-        if (remainigPlayer <= 0)//残りプレイヤー数が0以下になったら。
+        isPlayerEnd[myNum] = true;
+        if (flag[myNum] == false)
         {
-            for (int i = 0; i < 4; i++)
+            count++;
+            flag[myNum] = true;
+        }
+    }
+
+    public void MoveImage()
+    {
+        if (image.transform.position.x > leftMax.x)//Imageの移動処理
+        {
+            image.transform.Translate(moveSpeed);
+        }
+        else
+        {
+            imageMoveEnd = true;
+        }
+    }
+
+    void AddPoint()
+    {
+        
+        //MainGameData.SMainGameData mainGameData = MainGameData.Instance.SMainData;
+        
+        for(int i= 0; i < 4; i++)
+        {
+            if(scrollPlayers[i].GetIsWin())
             {
-                if (goal.isWin[i] == true)
-                {
-                    mainGameData.SMainData.Points[i] += winScore; //ゴールしていたら得点を加算
-                }
-                else
-                {
-                    mainGameData.SMainData.Points[i] += loseScore; //ゴールしていなかったら得点を減算
-                }
+                mainGameData.Points[i] += winScore;
             }
-            SceneManager.LoadScene("MainGameScene");//メインゲームに戻るぜ。
+            else
+            {
+                mainGameData.Points[i] += loseScore;
+            }
         }
     }
 }
