@@ -10,6 +10,11 @@ public class Score : MonoBehaviour
 {
     public Text ScoreText;
     public Button TitleButton;
+    //プレイヤー親
+    public GameObject PlayersParent;
+
+    //プレイヤー
+    GameObject[] _players;
 
     int[] _points;
     int[] _player;
@@ -19,6 +24,13 @@ public class Score : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //プレイヤーモデルを取得
+        _players = new GameObject[PlayersParent.transform.childCount];
+        for (int i = 0; i < PlayersParent.transform.childCount; i++)
+        {
+            _players[i] = PlayersParent.transform.GetChild(i).gameObject;
+        }
+
         if (MainGameData.Instance != null)
         {
             MainGameData.SMainGameData mainGameData = MainGameData.Instance.SMainData;
@@ -80,8 +92,25 @@ public class Score : MonoBehaviour
             TextUpdate(i + 1);
         }
 
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(0.5f);
+
+        ViewWinnerPlayer();
+
+        yield return new WaitForSeconds(1.0f);
+
         TitleButton.gameObject.SetActive(true);
+    }
+
+    //1位のプレイヤーを表示、手を振るアニメーション
+    void ViewWinnerPlayer()
+    {
+        //取得
+        GameObject pl = _players[_player[0] - 1];
+        //表示
+        pl.SetActive(true);
+        //手を振る
+        Animator animator = pl.GetComponent<Animator>();
+        animator.SetTrigger("Wave");
     }
 
     //num 1P～
@@ -109,7 +138,4 @@ public class Score : MonoBehaviour
     {
         SceneManager.LoadScene("TitleScene");
     }
-
-
-
 }
