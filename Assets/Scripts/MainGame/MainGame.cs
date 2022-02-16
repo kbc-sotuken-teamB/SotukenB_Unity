@@ -100,6 +100,9 @@ public class MainGame : MonoBehaviour
     const string SCENE_GEMIN = "MinGameGEMIN";
     const string SCENE_SCROLL = "MiniGameSideScrolling";
     const string SCENE_JUMP = "MiniGamejump";
+
+    const float FILL_AMOUNT_OFFSET = 1.57f;
+
     //ミニゲームシーンの配列 ランダムインデックスで呼ぶ
     string[] _miniGameScenes = { SCENE_GEMIN, SCENE_SCROLL, SCENE_JUMP };
 
@@ -108,7 +111,7 @@ public class MainGame : MonoBehaviour
 
     int _currentTurn;
 
-    //今何Pのターンか
+    //今何Pのターンか 1～4
     int _currentPlayer = 0;
     //bool _isIdle = true;
     //「○PButtonA」
@@ -183,7 +186,7 @@ public class MainGame : MonoBehaviour
         //audioComponentを取得
         audioSource = GetComponent<AudioSource>();
         //テキストバーを取得
-        image = GameObject.Find("TextBar");
+        //image = GameObject.Find("TextBar");
     }
 
     // Update is called once per frame
@@ -391,7 +394,7 @@ public class MainGame : MonoBehaviour
             AnnounceText.text = _currentPlayer + "Pは" + _diceNum + "マス進みます";
             Debug.Log(_currentPlayer + "P: " + _diceNum);
             //ImageというコンポーネントのfillAmountを取得して操作する
-            image.GetComponent<Image>().fillAmount = 0.3f;
+            image.GetComponent<Image>().fillAmount = 0.3f * FILL_AMOUNT_OFFSET;
             //プレイヤー取得
             MainPlayer player = _players[_currentPlayer - 1].GetComponent<MainPlayer>();
             //プレイヤーの現在マス取得
@@ -535,11 +538,18 @@ public class MainGame : MonoBehaviour
         //◯PのAボタンのキー設定
         _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
 
+        //1Pのターンなら
+        if (_currentPlayer == 1)
+        {
+            //ターン表示更新
+            TextTurn.text = "ターン" + _currentTurn;
+        }
+
         //◯Pのターン！
         Debug.Log("Next:" + _currentPlayer + "P");
         AnnounceText.text = _currentPlayer + "Pのターン！";
         //ImageというコンポーネントのfillAmountを取得して操作する
-        image.GetComponent<Image>().fillAmount = 0.2f;
+        image.GetComponent<Image>().fillAmount = 0.2f * FILL_AMOUNT_OFFSET;
         //Aボタン入力を促すただの「A」だけのテキスト表示　クソ雑　本来ボタンアイコンとかにするべき
         TextA.SetActive(true);
 
@@ -576,7 +586,7 @@ public class MainGame : MonoBehaviour
                 case "SquareAddCoin":
                     AnnounceText.text = "コインマス！ " + _currentPlayer + "Pは10コインゲット！";
                     //ImageというコンポーネントのfillAmountを取得して操作する
-                    image.GetComponent<Image>().fillAmount = 0.52f;
+                    image.GetComponent<Image>().fillAmount = 0.52f * FILL_AMOUNT_OFFSET;
                     //コイン追加　とりあえず10
                     player.AddCoin(10);
                     //コインの効果音
@@ -585,10 +595,9 @@ public class MainGame : MonoBehaviour
                     break;
                 //コインマイナスマスなら
                 case "SquareMinuCoin":
-                    AnnounceText.text = "コインマイナスマス・・・ " + _currentPlayer + "Pは10コイン没収！！";
+                    AnnounceText.text = "コインマイナスマス… " + _currentPlayer + "Pは5コイン没収！！";
                     //ImageというコンポーネントのfillAmountを取得して操作する
-                    image.GetComponent<Image>().fillAmount = 0.7f;
-                    //コイン追加　とりあえず10
+                    image.GetComponent<Image>().fillAmount = 3f * FILL_AMOUNT_OFFSET;
                     player.MinusCoin(5);
                     //コインの効果音
                     audioSource.PlayOneShot(soundCoinDown);
@@ -672,7 +681,7 @@ public class MainGame : MonoBehaviour
         //InitMinigame();
 
         //ターン20で終わり
-        if(_currentTurn >= 20)
+        if(_currentTurn >= 10)
         {
             PanelGameEnd.SetActive(true);
             //1秒待って

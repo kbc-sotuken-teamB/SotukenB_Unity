@@ -89,7 +89,7 @@ public class MainPlayer : MonoBehaviour
     //プレイヤー歩行速度
     const float SPEED = 0.07f;
     //早送り
-    const float FAST = 2.0f;
+    const float FAST = 3.0f;
 
 
     // Start is called before the first frame update
@@ -260,9 +260,10 @@ public class MainPlayer : MonoBehaviour
     }
     public void MinusCoin(int coin)
     {
-        if (_point > 0)
+        _point -= coin;
+        if (_point < 0)
         {
-            _point -= coin;
+            _point = 0;
         }
         ApplyPointText();
     }

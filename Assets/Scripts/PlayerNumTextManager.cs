@@ -28,6 +28,10 @@ public class PlayerNumTextManager : MonoBehaviour
     //この数字の分上に表示する
     const float OFFSET_Y = 2.3f;
 
+    const int FONT_SIZE = 50;
+
+    Vector2 sizeXY = new Vector2(500.0f, 500.0f);
+
     // Start is called before the first frame update
     void Start()
     {
@@ -51,6 +55,10 @@ public class PlayerNumTextManager : MonoBehaviour
             _plNumTexts[i].color = _plColor[i];
             //テキスト「▼1P」
             _plNumTexts[i].text = "▼" + ( i + 1) +"P";
+            //テキストサイズ
+            _plNumTexts[i].fontSize = FONT_SIZE;
+            _plNumTexts[i].resizeTextMaxSize = FONT_SIZE;
+            _plNumTexts[i].GetComponent<RectTransform>().sizeDelta = sizeXY;
         }
     }
 
