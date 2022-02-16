@@ -15,6 +15,9 @@ public class ScrollPlayer : MonoBehaviour
     [SerializeField] private int number = 0;//このプレイヤーの番号。
     [SerializeField] private int Point = 10;//得点
 
+    public bool GetIsWin() { return isGoal; }//ゴールしたかどうかの判定を取得。外部からアクセスされたくないのでsetは無し。
+    
+
     // Start is called before the first frame update
     private void Start()
     {
