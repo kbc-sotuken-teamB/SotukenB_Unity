@@ -57,8 +57,8 @@ public class MainGameData : MonoBehaviour
         {
             //0埋め
             CurrentSquares = Enumerable.Repeat(0, 4).ToArray(),
-            //0埋め
-            Points = Enumerable.Repeat(0, 4).ToArray(),
+            //10埋め
+            Points = Enumerable.Repeat(10, 4).ToArray(),
             //0
             CurrentPlayer = 0,
             //1
