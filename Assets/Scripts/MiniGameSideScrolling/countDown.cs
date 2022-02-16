@@ -25,8 +25,7 @@ public class countDown : MonoBehaviour
 
 	IEnumerator CountdownCoroutine()
 	{
-		_imageMask.gameObject.SetActive(true);
-		_textCountdown.gameObject.SetActive(true);
+		
 
 		_textCountdown.text = "3";
 		yield return new WaitForSeconds(1.0f);
@@ -41,8 +40,7 @@ public class countDown : MonoBehaviour
 		yield return new WaitForSeconds(1.0f);
 
 		_textCountdown.text = "";
-		_textCountdown.gameObject.SetActive(false);
-		_imageMask.gameObject.SetActive(false);
+		
 		isCountOver = true;
 	}
 	//trueなら諸々の処理を始めてもろて。

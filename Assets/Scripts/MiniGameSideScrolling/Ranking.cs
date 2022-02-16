@@ -12,7 +12,7 @@ public class Ranking : MonoBehaviour
     [SerializeField] Vector3 startPos = new Vector3(600.0f, 255.0f, 0.0f);
     [SerializeField] Vector3 moveSpeed = new Vector3(-5.0f, 0.0f, 0.0f);
     [SerializeField] float delay = 0;
-    MainGameData.SMainGameData mainGameData = MainGameData.Instance.SMainData;
+    MainGameData.SMainGameData mainGameData;// = MainGameData.Instance.SMainData;
     bool imageMoveEnd = false;
     bool[] isPlayerEnd = new bool[4];
     int count = 0;
@@ -25,7 +25,7 @@ public class Ranking : MonoBehaviour
         {
             scrollPlayers[i] = scrollPlayer[i].GetComponent<ScrollPlayer>();
         }
-        //main = MainGameData.Instance.SMainData;
+        mainGameData = MainGameData.Instance.SMainData;
     }
 
     // Update is called once per frame
