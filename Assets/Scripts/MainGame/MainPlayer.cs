@@ -86,6 +86,10 @@ public class MainPlayer : MonoBehaviour
     const float MOVE_DURATION = 1.0f;
     //オフセットの間隔
     const float OFFSET_DURATION = 0.66f;
+    //プレイヤー歩行速度
+    const float SPEED = 0.07f;
+    //早送り
+    const float FAST = 2.0f;
 
 
     // Start is called before the first frame update
@@ -115,7 +119,7 @@ public class MainPlayer : MonoBehaviour
     public void ApplyOffset()
     {
         Vector3 pos = transform.position + _plOffset;
-        pos.y = _yPos;
+        //pos.y = _yPos;
 
         transform.position = pos;
     }
@@ -168,13 +172,13 @@ public class MainPlayer : MonoBehaviour
         float deltaTime = Time.deltaTime;
         //早送り
         if (_isFast){
-            deltaTime *= 2.0f;
+            deltaTime *= FAST;
         }
         _moveTime = Mathf.Min(MOVE_DURATION, _moveTime + deltaTime);
 
         //y位置調整やオフセット
         Vector3 targetPos = _targetPosList[_targetPosListInd];
-        targetPos.y = _yPos;
+        //targetPos.y = _yPos;
         targetPos += _plOffset;
 
         //線形補間移動
@@ -182,7 +186,11 @@ public class MainPlayer : MonoBehaviour
         //プレイヤーから次の座標までのベクトル
         Vector3 moveSpeed = targetPos - transform.position;
         moveSpeed.Normalize();
-        transform.position += moveSpeed * 0.07f;
+        if (_isFast)
+        {
+            moveSpeed *= FAST;
+        }
+        transform.position += moveSpeed * SPEED;
         //transform.position = Vector3.Lerp(_oldPos, targetPos, _moveTime / MOVE_DURATION);
         Vector3 diff = transform.position - _oldPos;   //前回からどこに進んだかをベクトルで取得
         _oldPos = transform.position;  //前回のPositionの更新
@@ -200,10 +208,10 @@ public class MainPlayer : MonoBehaviour
             //足音を再生
             if (count == 0) audioSource.PlayOneShot(soundWolkPray);
             count = 1;
-            
+
+            //animator.ResetTrigger("Get");
             animator.SetFloat("Speed", 0.2f);
         }
-
 
         //移動終わったら
         //if (_moveTime == MOVE_DURATION)
