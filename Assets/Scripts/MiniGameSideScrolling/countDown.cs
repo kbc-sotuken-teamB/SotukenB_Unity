@@ -25,8 +25,6 @@ public class countDown : MonoBehaviour
 
 	IEnumerator CountdownCoroutine()
 	{
-		
-
 		_textCountdown.text = "3";
 		yield return new WaitForSeconds(1.0f);
 
