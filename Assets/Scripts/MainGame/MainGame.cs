@@ -514,7 +514,7 @@ public class MainGame : MonoBehaviour
         else
         {
             //1秒待って
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(2.0f);
         }
         //カメラを現在プレイヤーに合わせる
         _cameraScript.ChangeFollow(_currentPlayer);

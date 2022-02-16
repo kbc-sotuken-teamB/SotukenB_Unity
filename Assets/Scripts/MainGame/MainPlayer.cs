@@ -35,7 +35,7 @@ public class MainPlayer : MonoBehaviour
     public Vector3 Position { set { transform.position = value;} }
 
     //所持ポイント
-    int _point = 0;
+    int _point = 10;
     public int Point { get { return _point; } set { _point = value; } }
 
     //ゴールした？
