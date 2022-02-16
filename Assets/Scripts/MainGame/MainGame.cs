@@ -597,7 +597,7 @@ public class MainGame : MonoBehaviour
                 case "SquareMinuCoin":
                     AnnounceText.text = "コインマイナスマス… " + _currentPlayer + "Pは5コイン没収！！";
                     //ImageというコンポーネントのfillAmountを取得して操作する
-                    image.GetComponent<Image>().fillAmount = 3f * FILL_AMOUNT_OFFSET;
+                    image.GetComponent<Image>().fillAmount = 1.0f * FILL_AMOUNT_OFFSET;
                     player.MinusCoin(5);
                     //コインの効果音
                     audioSource.PlayOneShot(soundCoinDown);
@@ -624,6 +624,7 @@ public class MainGame : MonoBehaviour
 
         Debug.Log(_currentPlayer + "P is goal!");
         AnnounceText.text = _currentPlayer + "Pゴール！ 100ポイントゲット！";
+        image.GetComponent<Image>().fillAmount = 0.5f * FILL_AMOUNT_OFFSET;
         //ボーナス100ポイント
         MainPlayer player = _players[_currentPlayer - 1].GetComponent<MainPlayer>();
         player.AddCoin(100);
@@ -636,6 +637,7 @@ public class MainGame : MonoBehaviour
 
         //ゴールしたプレイヤーをスタートに戻す
         AnnounceText.text = _currentPlayer + "Pはスタートに戻ります";
+        image.GetComponent<Image>().fillAmount = 0.4f * FILL_AMOUNT_OFFSET;
         player.transform.position = _squares[0].position;
         player.ApplyOffset();
         player.CurrentSquare = 0;
