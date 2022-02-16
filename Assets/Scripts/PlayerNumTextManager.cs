@@ -26,7 +26,7 @@ public class PlayerNumTextManager : MonoBehaviour
     int _plCount;
 
     //この数字の分上に表示する
-    const float OFFSET_Y = 1.3f;
+    const float OFFSET_Y = 2.3f;
 
     // Start is called before the first frame update
     void Start()
