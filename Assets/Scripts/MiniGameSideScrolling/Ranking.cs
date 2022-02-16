@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+using System.Diagnostics;
 //死んだ数+ゴールした数がプレイヤー人数を超えたらシーンを切り替えるスクリプト。
 public class Ranking : MonoBehaviour
 {
@@ -18,6 +18,8 @@ public class Ranking : MonoBehaviour
     int count = 0;
     int winScore = 10;
     int loseScore = 3;
+
+    MainGameData mainGame;
     // Start is called before the first frame update
     private void Start()
     {
@@ -25,7 +27,9 @@ public class Ranking : MonoBehaviour
         {
             scrollPlayers[i] = scrollPlayer[i].GetComponent<ScrollPlayer>();
         }
-        mainGameData = MainGameData.Instance.SMainData;
+        mainGameData = MainGameData.Instance.SMainData;//メインゲームデータの初期化
+
+        
     }
 
     // Update is called once per frame
@@ -79,11 +83,11 @@ public class Ranking : MonoBehaviour
         {
             if(scrollPlayers[i].GetIsWin())
             {
-                mainGameData.Points[i] = winScore;
+                mainGameData.Points[i] += winScore;
             }
             else
             {
-                mainGameData.Points[i] = loseScore;
+                mainGameData.Points[i] += loseScore;
             }
         }
     }
