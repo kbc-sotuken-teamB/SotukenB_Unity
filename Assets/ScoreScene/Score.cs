@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 public class Score : MonoBehaviour
 {
     public Text ScoreText;
-    public Button TitleButton;
+    public Text InfText;
     //プレイヤー親
     public GameObject PlayersParent;
 
@@ -20,6 +20,20 @@ public class Score : MonoBehaviour
     int[] _player;
 
     const int PL = 4;
+
+    //これに今何Pのターンか取得してくっつける
+    const string BUTTON_A = "PButtonA";
+    //今何Pのターンか 1～4
+    int _currentPlayer = 1;
+    //「○PButtonA」
+    string _plInputTextA;
+    string _plInputTextA2;
+    string _plInputTextA3;
+    string _plInputTextA4;
+    //クリック音
+    public AudioClip soundClick;
+
+    AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
@@ -71,6 +85,15 @@ public class Score : MonoBehaviour
 
         ScoreText.text = "";
 
+        _currentPlayer = 1;
+        _plInputTextA = _currentPlayer.ToString() + BUTTON_A;
+        _currentPlayer = 2;
+        _plInputTextA2 = _currentPlayer.ToString() + BUTTON_A;
+        _currentPlayer = 3;
+        _plInputTextA3 = _currentPlayer.ToString() + BUTTON_A;
+        _currentPlayer = 4;
+        _plInputTextA4 = _currentPlayer.ToString() + BUTTON_A;
+
         StartCoroutine(TextUpdateCoroutine());
 
     }
@@ -81,6 +104,13 @@ public class Score : MonoBehaviour
         //最終結果
         //4人並べてポイント表示して、優勝の人が真ん中に移動して祝う演出的な
         //…のをやりたかったが時間がない
+
+
+        if (Input.GetButtonUp(_plInputTextA) || Input.GetButtonUp(_plInputTextA2)|| Input.GetButtonUp(_plInputTextA3)|| Input.GetButtonUp(_plInputTextA4))
+        {
+            //ミニゲームシーンを呼び出す
+            SceneManager.LoadScene("TitleScene");
+        }
     }
 
 
@@ -98,7 +128,7 @@ public class Score : MonoBehaviour
 
         yield return new WaitForSeconds(1.0f);
 
-        TitleButton.gameObject.SetActive(true);
+        //TitleButton.gameObject.SetActive(true);
     }
 
     //1位のプレイヤーを表示、手を振るアニメーション
@@ -132,10 +162,5 @@ public class Score : MonoBehaviour
         }
 
         ScoreText.text = sb.ToString();
-    }
-
-    public void TitleButtonClick()
-    {
-        SceneManager.LoadScene("TitleScene");
     }
 }

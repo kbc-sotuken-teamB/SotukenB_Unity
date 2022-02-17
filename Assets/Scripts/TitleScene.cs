@@ -41,7 +41,7 @@ public class TitleScene : MonoBehaviour
             }
             audioSource.volume = (float)(0.2f - FadeDeltaTime / FadeInSeconds * 0.1f);
 
-            if(audioSource.volume <= 0.0f)
+            if(audioSource.volume <= 0.05f)
             {
                 //ゲームシーンに遷移
                 SceneManager.LoadScene("MainGameScene");

@@ -35,6 +35,7 @@ public class MainGame : MonoBehaviour
 {
     //--参照
     public Text AnnounceText;
+    public Text PlText;
     //プレイヤー親
     public GameObject PlayersParent;
 
@@ -87,6 +88,7 @@ public class MainGame : MonoBehaviour
         enDiceEnd,
         enMovePlayer,
         enIdle,
+        enMiniWait,
         //enNextPlayer
     }
 
@@ -127,7 +129,7 @@ public class MainGame : MonoBehaviour
     //追従カメラ
     CameraFollowPlayer _cameraScript;
     //次のミニゲーム
-    int _minigameInd = -1;
+    int _minigameInd = 1;
 
     Vector3 _dicePosOffset;
 
@@ -215,11 +217,16 @@ public class MainGame : MonoBehaviour
                 MovePlayer();
                 break;
 
+            case EnMainGameState.enMiniWait:
+                //ミニゲーム待機
+                MiniWait();
+                break;
+
             /*case EnMainGameState.enNextPlayer:
                 CheckNextPlayer();
                 break;*/
 
-                //何もしない
+            //何もしない
             case EnMainGameState.enWait:
 
             default:
@@ -458,7 +465,7 @@ public class MainGame : MonoBehaviour
         //サイコロの回転をリセット
         //Dice.transform.rotation = Quaternion.identity;
 
-        Dice.GetComponent<Dice>().InitMove(Vector3.one - _dicePosOffset, diceAngle);
+        Dice.GetComponent<Dice>().InitMove(Camera.main.transform.position - _dicePosOffset, diceAngle);
 
         //出た目の位置へ回転
         //Dice.transform.eulerAngles = _diceAngle;
@@ -617,6 +624,16 @@ public class MainGame : MonoBehaviour
             //_mainState = EnMainGameState.enNextPlayer;
         }
     }
+    void MiniWait()
+    {
+        if (Input.GetButtonUp(_plInputTextA))
+        {
+            //クリック音の効果音
+            audioSource.PlayOneShot(soundClick);
+            //ミニゲームシーンを呼び出す
+            SceneManager.LoadScene(_miniGameScenes[_minigameInd]);
+        }
+    }
 
     IEnumerator GoalCoroutine()
     {
@@ -648,11 +665,12 @@ public class MainGame : MonoBehaviour
     //次のプレイヤーをチェック (関数の最後で呼んでほしい)
     void CheckNextPlayer()
     {
-        _currentPlayer++;
+        
 
         //4以下なら次のプレイヤーがサイコロを振る
-        if (_currentPlayer <= 4)
+        if (_currentPlayer < 4)
         {
+            _currentPlayer++;
             StartCoroutine(NextPlayerCoroutine());
         }
         //5になったら全員終わったので
@@ -666,24 +684,19 @@ public class MainGame : MonoBehaviour
     {
         _mainState = EnMainGameState.enWait;
 
+        PlText.text = _currentPlayer + "P";
         //ターン増加
         _currentTurn++;
         //カレントプレイヤーを0に戻して
-        _currentPlayer = 1;
+        _currentPlayer = 0;
         //データセーブ
         SaveParam();
 
         //1秒待って
         yield return new WaitForSeconds(1.0f);
 
-        //AnnounceText.text = "ターン終了！ミニゲームを開始します！";
-        //ImageというコンポーネントのfillAmountを取得して操作する
-        //image.GetComponent<Image>().fillAmount = 0.6f;
-        //ミニゲームを準備する
-        //InitMinigame();
-
-        //ターン20で終わり
-        if(_currentTurn >= 10)
+        //ターン10で終わり
+        if (_currentTurn >= 10)
         {
             PanelGameEnd.SetActive(true);
             //1秒待って
@@ -693,22 +706,28 @@ public class MainGame : MonoBehaviour
         }
         else
         {
-            StartCoroutine(NextPlayerCoroutine());
+            AnnounceText.text = "ターン終了！ミニゲームを開始します！";
+            //ImageというコンポーネントのfillAmountを取得して操作する
+            image.GetComponent<Image>().fillAmount = 0.9f;
+            //ミニゲームを準備する
+            InitMinigame();
         }
+        
+
     }
 
     void InitMinigame()
     {
         //ミニゲームをランダムで決める
-        _minigameInd = Random.Range(0, _miniGameScenes.Length);
+        //_minigameInd = Random.Range(0, _miniGameScenes.Length);
         //ミニゲーム開始ボタンのUI表示
         PanelBeginMiniGame.SetActive(true);
         //テキストを表示
         PanelBeginMiniGame.transform.Find("TextBeginMiniGame").GetComponent<Text>().text
             = "ミニゲーム" + MINIGAME_TITLE[_minigameInd] + "を開始します";
-
+        
         //ミニゲームスタートボタン待機へ
-        _mainState = EnMainGameState.enWait;
+        _mainState = EnMainGameState.enMiniWait;
     }
 
     //データセーブ
